@@ -6,8 +6,8 @@
 # https://learn-the-web.algonquindesign.ca/topics/markdown-yaml-cheat-sheet/#yaml
 # https://learnxinyminutes.com/docs/yaml/
 
-title: My first own blog
-description: An easy to use blogging platform with support for Jupyter Notebooks.
+title: Chris' DS Blog
+description: An simple blog with support form Jupyter Notebooks.
 github_username: christopherGuan
 # you can comment the below line out if your repo name is not different than your baseurl
 github_repo: "sample-ds-blog"
