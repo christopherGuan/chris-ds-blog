@@ -4,12 +4,10 @@ title: About Me
 permalink: /about/
 ---
 
-¬¬EDUCATION
-Fei Tian College Middletown, Middletown, NY		                	
-Bachelor of Science, Data Science                                             	                                                        Expected June 2023
 
-No.2 Experimental High School, Changchun, Jilin 
-                                                                                                                          Graduated May 2015
+**Christopher Guan**
+
+Please visit [my resume](https://shudi-zhao.github.io/My_Data_Science_Blog/2021/03/10/My-Resume.html) for additional information!
 
 Courses
 Data Mining, Cloud Computing and Big data, Business Data Analytics, Statistical Computing and Graphics, Database Systems, Data structure and Algorithm, Computation Analysis and Practical Programing, Linear Algebra, Probability, Statistics
