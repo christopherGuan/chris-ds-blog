@@ -6,15 +6,24 @@ permalink: /about/
 [MD Cheatsheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet)
 
 
-# Christopher Guan: 
-![alt text][MySelf]
-[MySelf]: https://sm.askmen.com/t/askmen_in/article/f/facebook-p/facebook-profile-picture-affects-chances-of-gettin_fr3n.1200.jpg "Blog owner's profile"
+## Christopher Guan: 
+![alt text](https://sm.askmen.com/t/askmen_in/article/f/facebook-p/facebook-profile-picture-affects-chances-of-gettin_fr3n.1200.jpg "Logo Title Text 1")
 
-## COURSES
+---
+
+> Blockquotes are very handy in email to emulate reply text.
+> This line is part of the same quote.
+
+Quote break.
+
+> This is a very long line that will still be quoted properly when it wraps. Oh boy let's keep writing to make sure this is long enough to actually wrap for everyone. Oh, you can *put* **Markdown** into a blockquote. 
+
+
+### COURSES
 Data Mining, Cloud Computing and Big data, Business Data Analytics, Statistical Computing and Graphics, Database Systems, Data structure and Algorithm, Computation Analysis and Practical Programing, Linear Algebra, Probability, Statistics
 EXPERIENCE
 
-## EXPERIENCE
+### EXPERIENCE
 Youtube Data Automation                                 			               	December 2021 – January 2022
 Paid Project
 ·	Obtained authorization credentials and stored hidden Youtube data in a csv file.
@@ -52,12 +61,12 @@ World Happiness Analysis			              		     September 2020 – December 2020
 •	Demoed and explained the disclosures including the outliers and the irregular fluctuations in the happiness ranking. 
 •	Analyzed and predicted the causation.
 
-## SKILLS
+### SKILLS
 ·	Computer/ Tools: Tableau, AWS, Python, R, MySQL Workbench, RapidMiner, Advanced knowledge of Excel, Intermediate level of Java, HTML, CSS.
 ·	Analytical skills, qualitative and quantitative research skills.
 ·	Public Speaking; Public Relations; Event Planning, Storyteller, Teamwork; Detail-oriented; Social skills; Project management
 
-## CERTIFICATIONS
+### CERTIFICATIONS
 ·	Data Analysis in Spreadsheets
 ·	Intermediate R for Finance
 ·	Credit Risk Modeling in R
