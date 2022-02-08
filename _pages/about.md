@@ -67,7 +67,6 @@ World Happiness Analysis			              		     September 2020 – December 2020
 My favorite quote
 
 > “Great beauty, great strength, and great riches are really and truly of no great use; a right heart exceeds all”
-
 ― Benjamin Franklin
 
 
