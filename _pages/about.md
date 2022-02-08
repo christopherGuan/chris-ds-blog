@@ -7,16 +7,7 @@ permalink: /about/
 
 
 ## Christopher Guan: 
-![alt text](https://sm.askmen.com/t/askmen_in/article/f/facebook-p/facebook-profile-picture-affects-chances-of-gettin_fr3n.1200.jpg "Logo Title Text 1")
-
----
-
-> Blockquotes are very handy in email to emulate reply text.
-> This line is part of the same quote.
-
-Quote break.
-
-> This is a very long line that will still be quoted properly when it wraps. Oh boy let's keep writing to make sure this is long enough to actually wrap for everyone. Oh, you can *put* **Markdown** into a blockquote. 
+![alt text](https://sm.askmen.com/t/askmen_in/article/f/facebook-p/facebook-profile-picture-affects-chances-of-gettin_fr3n.1200.jpg "Blog owner's profile")
 
 
 ### COURSES
@@ -70,6 +61,15 @@ World Happiness Analysis			              		     September 2020 – December 2020
 ·	Data Analysis in Spreadsheets
 ·	Intermediate R for Finance
 ·	Credit Risk Modeling in R
+
+***
+
+My favorite quote
+
+> “Great beauty, great strength, and great riches are really and truly of no great use; a right heart exceeds all”
+
+― Benjamin Franklin
+
 
 
 This website is powered by **[fastpages](https://github.com/fastai/fastpages)** [^1].
