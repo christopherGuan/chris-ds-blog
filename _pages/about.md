@@ -7,8 +7,9 @@ permalink: /about/
 
 
 ## Christopher Guan: 
-![alt text](https://sm.askmen.com/t/askmen_in/article/f/facebook-p/facebook-profile-picture-affects-chances-of-gettin_fr3n.1200.jpg "Blog owner's profile")
-
+<div style="text-align: center;">
+<img src="https://cdn.pixabay.com/photo/2016/02/25/18/26/man-1222621_640.jpg" alt="drawing" width="200"/>
+</div>
 
 ### COURSES
 Data Mining, Cloud Computing and Big data, Business Data Analytics, Statistical Computing and Graphics, Database Systems, Data structure and Algorithm, Computation Analysis and Practical Programing, Linear Algebra, Probability, Statistics
