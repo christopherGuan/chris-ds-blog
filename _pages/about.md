@@ -3,13 +3,14 @@ layout: page
 title: About Me
 permalink: /about/
 ---
+[MD Cheatsheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet)
 
-
+# Hello Work
 **Christopher Guan**
 
 Please visit [my resume](https://shudi-zhao.github.io/My_Data_Science_Blog/2021/03/10/My-Resume.html) for additional information!
 
-Courses
+⋅⋅* Courses
 Data Mining, Cloud Computing and Big data, Business Data Analytics, Statistical Computing and Graphics, Database Systems, Data structure and Algorithm, Computation Analysis and Practical Programing, Linear Algebra, Probability, Statistics
 EXPERIENCE
 
