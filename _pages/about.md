@@ -5,15 +5,16 @@ permalink: /about/
 ---
 [MD Cheatsheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet)
 
-# Hello Work
-**Christopher Guan**
 
-Please visit [my resume](https://shudi-zhao.github.io/My_Data_Science_Blog/2021/03/10/My-Resume.html) for additional information!
+# Christopher Guan: 
+![alt text][MySelf]
+[MySelf]: https://sm.askmen.com/t/askmen_in/article/f/facebook-p/facebook-profile-picture-affects-chances-of-gettin_fr3n.1200.jpg "Blog owner's profile"
 
-⋅⋅* Courses
+## COURSES
 Data Mining, Cloud Computing and Big data, Business Data Analytics, Statistical Computing and Graphics, Database Systems, Data structure and Algorithm, Computation Analysis and Practical Programing, Linear Algebra, Probability, Statistics
 EXPERIENCE
 
+## EXPERIENCE
 Youtube Data Automation                                 			               	December 2021 – January 2022
 Paid Project
 ·	Obtained authorization credentials and stored hidden Youtube data in a csv file.
@@ -51,20 +52,16 @@ World Happiness Analysis			              		     September 2020 – December 2020
 •	Demoed and explained the disclosures including the outliers and the irregular fluctuations in the happiness ranking. 
 •	Analyzed and predicted the causation.
 
-SKILLS
+## SKILLS
 ·	Computer/ Tools: Tableau, AWS, Python, R, MySQL Workbench, RapidMiner, Advanced knowledge of Excel, Intermediate level of Java, HTML, CSS.
 ·	Analytical skills, qualitative and quantitative research skills.
 ·	Public Speaking; Public Relations; Event Planning, Storyteller, Teamwork; Detail-oriented; Social skills; Project management
 
-CERTIFICATIONS
+## CERTIFICATIONS
 ·	Data Analysis in Spreadsheets
 ·	Intermediate R for Finance
 ·	Credit Risk Modeling in R
-![image](https://user-images.githubusercontent.com/45466031/152725786-08e7ef8a-de9f-43a2-bb48-3af0c2be3806.png)
 
 
 This website is powered by **[fastpages](https://github.com/fastai/fastpages)** [^1].
-
-
-
 [^1]:a blogging platform that natively supports Jupyter notebooks in addition to other formats.
