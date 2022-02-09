@@ -3,10 +3,8 @@ layout: page
 title: About Chris
 permalink: /about/
 ---
-[MD Cheatsheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet)
 
-
-<img align="right" width="280" height="280" src="https://cdn.pixabay.com/photo/2016/02/25/18/26/man-1222621_640.jpg">
+<img align="right" width="200" height="200" src="https://cdn.pixabay.com/photo/2016/02/25/18/26/man-1222621_640.jpg">
 
 
 ## Courses
