@@ -7,9 +7,7 @@ permalink: /about/
 
 
 ## Christopher Guan: 
-<div style="text-align: center;">
-<img src="https://cdn.pixabay.com/photo/2016/02/25/18/26/man-1222621_640.jpg" alt="drawing" width="200"/>
-</div>
+<img align="right" width="300" height="300" src="https://cdn.pixabay.com/photo/2016/02/25/18/26/man-1222621_640.jpg">
 
 ### COURSES
 Data Mining, Cloud Computing and Big data, Business Data Analytics, Statistical Computing and Graphics, Database Systems, Data structure and Algorithm, Computation Analysis and Practical Programing, Linear Algebra, Probability, Statistics
