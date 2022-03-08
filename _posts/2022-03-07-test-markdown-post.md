@@ -8,6 +8,8 @@ title: An Example Markdown Post
 ---
 # Example Markdown Post
 
+![]({{site.baseurl}}/images/diagram.png "https://github.com/fastai/fastpages")
+
 ## Basic setup
 
 Jekyll requires blog post files to be named according to the following format:
