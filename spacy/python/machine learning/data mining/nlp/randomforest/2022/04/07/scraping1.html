@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Scraping Amazon Reviews using Scrapy in Python Part 1 | Data Science Blog</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Scraping Amazon Reviews using Scrapy in Python Part 1" />
+<meta name="author" content="Zeyu Guan" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="An NLP Application with spaCy and Random Forest Classifier, inspired by this Wine Project" />
+<meta property="og:description" content="An NLP Application with spaCy and Random Forest Classifier, inspired by this Wine Project" />
+<link rel="canonical" href="https://christopherguan.github.io/sample-ds-blog/spacy/python/machine%20learning/data%20mining/nlp/randomforest/2022/04/07/scraping1.html" />
+<meta property="og:url" content="https://christopherguan.github.io/sample-ds-blog/spacy/python/machine%20learning/data%20mining/nlp/randomforest/2022/04/07/scraping1.html" />
+<meta property="og:site_name" content="Data Science Blog" />
+<meta property="og:image" content="https://techunwrapped.com/wp-content/uploads/2021/07/Shure-MV7-we-tested-what-could-be-the-best-mic.jpg" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-04-07T00:00:00-05:00" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta property="twitter:image" content="https://techunwrapped.com/wp-content/uploads/2021/07/Shure-MV7-we-tested-what-could-be-the-best-mic.jpg" />
+<meta property="twitter:title" content="Scraping Amazon Reviews using Scrapy in Python Part 1" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Zeyu Guan"},"dateModified":"2022-04-07T00:00:00-05:00","datePublished":"2022-04-07T00:00:00-05:00","description":"An NLP Application with spaCy and Random Forest Classifier, inspired by this Wine Project","headline":"Scraping Amazon Reviews using Scrapy in Python Part 1","image":"https://techunwrapped.com/wp-content/uploads/2021/07/Shure-MV7-we-tested-what-could-be-the-best-mic.jpg","mainEntityOfPage":{"@type":"WebPage","@id":"https://christopherguan.github.io/sample-ds-blog/spacy/python/machine%20learning/data%20mining/nlp/randomforest/2022/04/07/scraping1.html"},"url":"https://christopherguan.github.io/sample-ds-blog/spacy/python/machine%20learning/data%20mining/nlp/randomforest/2022/04/07/scraping1.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/sample-ds-blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://christopherguan.github.io/sample-ds-blog/feed.xml" title="Data Science Blog" /><link rel="shortcut icon" type="image/x-icon" href="/sample-ds-blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" /><script src="https://hypothes.is/embed.js" async></script>
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/sample-ds-blog/">Data Science Blog</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/sample-ds-blog/about/">About Chris</a><a class="page-link" href="/sample-ds-blog/search/">Search</a><a class="page-link" href="/sample-ds-blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Scraping Amazon Reviews using Scrapy in Python Part 1</h1><p class="page-description">An NLP Application with spaCy and Random Forest Classifier, inspired by this <a href='https://diveki.github.io/projects/wine/index.html'>Wine Project</a></p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2022-04-07T00:00:00-05:00" itemprop="datePublished">
+        Apr 7, 2022
+      </time>• 
+          <span itemprop="author" itemscope itemtype="http://schema.org/Person">
+            <span class="p-author h-card" itemprop="name">Zeyu Guan</span></span>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      11 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/sample-ds-blog/categories/#spaCy">spaCy</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/sample-ds-blog/categories/#Python">Python</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/sample-ds-blog/categories/#Machine Learning">Machine Learning</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/sample-ds-blog/categories/#Data Mining">Data Mining</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/sample-ds-blog/categories/#NLP">NLP</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/sample-ds-blog/categories/#RandomForest">RandomForest</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-justify-center">
+          <div class="px-2">
+
+    <a href="https://github.com/christopherGuan/sample-ds-blog/tree/master/_notebooks/2022-04-07-scraping1.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/sample-ds-blog/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://mybinder.org/v2/gh/christopherGuan/sample-ds-blog/master?filepath=_notebooks%2F2022-04-07-scraping1.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/sample-ds-blog/assets/badges/binder.svg" alt="Open In Binder"/>
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://colab.research.google.com/github/christopherGuan/sample-ds-blog/blob/master/_notebooks/2022-04-07-scraping1.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/sample-ds-blog/assets/badges/colab.svg" alt="Open In Colab"/>
+    </a>
+</div>
+          <div class="px-2">
+  <a href="https://deepnote.com/launch?url=https%3A%2F%2Fgithub.com%2FchristopherGuan%2Fsample-ds-blog%2Fblob%2Fmaster%2F_notebooks%2F2022-04-07-scraping1.ipynb" target="_blank">
+      <img class="notebook-badge-image" src="/sample-ds-blog/assets/badges/deepnote.svg" alt="Launch in Deepnote"/>
+  </a>
+</div>
+
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#Let's-get-started!">Let&#39;s get started! </a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#What-exactly-is-Scrapy?">What exactly is Scrapy? </a></li>
+<li class="toc-entry toc-h4"><a href="#Why-is-it-needed-to-scrape-Amazon-reviews?">Why is it needed to scrape Amazon reviews? </a></li>
+<li class="toc-entry toc-h4"><a href="#The-overall-view">The overall view </a></li>
+<li class="toc-entry toc-h4"><a href="#Shure-MV7">Shure MV7 </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Examining-the-webpage's-HTML-structure">Examining the webpage&#39;s HTML structure </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#URL-trick">URL trick </a></li>
+<li class="toc-entry toc-h3"><a href="#Inspect">Inspect </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Examining-the-webpage's-HTML-structure">Examining the webpage&#39;s HTML structure </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#URL-trick">URL trick </a></li>
+<li class="toc-entry toc-h3"><a href="#Inspect">Inspect </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Python-scrapy-parser-implementation">Python scrapy parser implementation </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Install-"scrapy"-package">Install &quot;scrapy&quot; package </a></li>
+<li class="toc-entry toc-h3"><a href="#Files-description">Files description </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Defining-Scrapy-Parser-in-Python">Defining Scrapy Parser in Python </a></li>
+<li class="toc-entry toc-h2"><a href="#Conclusion">Conclusion </a></li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2022-04-07-scraping1.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Let's-get-started!">
+<a class="anchor" href="#Let's-get-started!" aria-hidden="true"><span class="octicon octicon-link"></span></a>Let's get started!<a class="anchor-link" href="#Let's-get-started!"> </a>
+</h2>
+<p><img src="https://article.images.consumerreports.org/f_auto/prod/content/dam/CRO%20Images%202019/Electronics/08August/CR-Electronics-inline-Bv1-amazon-review-hacking-0819" alt="Amazon Review"></p>
+<p>Are you looking for a method of scraping Amazon reviews and do not know where to begin with? In that case, you may find this blog very useful in scraping Amazon reviews.</p>
+<p>In this blog, we'll look at scraping Amazon reviews with Python's Scrapy. Scrapy is a python web crawling framework, and web scraping is a simple way of collecting data from many websites. Web scraping enables users to manage data for their specific needs, such as online merchandising, price monitoring, and marketing decision-making.</p>
+<p>If you're wondering whether or whether this procedure is legal, you can discover the answer <a href="https://www.blog.datahut.co/post/is-web-data-scraping-legal">here</a>.</p>
+<p>Before we get into scanning Amazon for product reviews, let's take a look at some of the reasons why you might want to scrape Amazon reviews in the first place.</p>
+<h4 id="What-exactly-is-Scrapy?">
+<a class="anchor" href="#What-exactly-is-Scrapy?" aria-hidden="true"><span class="octicon octicon-link"></span></a>What exactly is Scrapy?<a class="anchor-link" href="#What-exactly-is-Scrapy?"> </a>
+</h4>
+<p>Scrapy is a web crawling framework that allows a developer to write code that defines how a specific site (or a group of websites) will be scraped. The most important feature is that it is built on Twisted, an asynchronous networking library, which significantly improves spider performance.</p>
+<h4 id="Why-is-it-needed-to-scrape-Amazon-reviews?">
+<a class="anchor" href="#Why-is-it-needed-to-scrape-Amazon-reviews?" aria-hidden="true"><span class="octicon octicon-link"></span></a>Why is it needed to scrape Amazon reviews?<a class="anchor-link" href="#Why-is-it-needed-to-scrape-Amazon-reviews?"> </a>
+</h4>
+<ul>
+<li>
+<p>Product reviews were subjected to a sentiment analysis.
+The reviews scraped from Amazon products can be subjected to sentiment analysis. This type of research aids in determining a user's emotional response to a certain product. This can assist sellers, as well as other potential customers, in gaining a better understanding of public opinion about the goods.</p>
+</li>
+<li>
+<p>Dropshipping sales optimization
+Dropshipping is a business model that allows a company to operate without an inventory or a depository for product storage. You can utilize web scraping to acquire product pricing, user opinions, consumer wants, and trend information.</p>
+</li>
+<li>
+<p>Web scraping is used to keep track of a brand's online reputation.
+It is tough for major corporations to keep track of their product reputation. Web scraping can aid in the extraction of pertinent review data, which can then be fed into various analysis tools to gauge user attitude toward the company.</p>
+</li>
+</ul>
+<h4 id="The-overall-view">
+<a class="anchor" href="#The-overall-view" aria-hidden="true"><span class="octicon octicon-link"></span></a>The overall view<a class="anchor-link" href="#The-overall-view"> </a>
+</h4>
+<ul>
+<li>
+<p>Examining the webpage's HTML structure<br>
+Scraping is the process of identifying patterns in web pages and extracting them. Before we begin writing a scraper, we must first understand the HTML structure of the target web page and identify patterns in it. The pattern is related to the repetitive use of classes, ids, and other HTML elements.</p>
+</li>
+<li>
+<p>Python scrapy parser implementation<br>
+We work on the coded implementation in Python after analyzing the structure of the target web page. Scrapy parser's responsibility is to visit the targeted web page and extract the information according to the rules specified.</p>
+</li>
+<li>
+<p>Information Gathering and Storage<br>
+The parser can output the results in any format you want, including CSV and JSON. This is the final output where your scraped data is stored.</p>
+</li>
+</ul>
+<h4 id="Shure-MV7">
+<a class="anchor" href="#Shure-MV7" aria-hidden="true"><span class="octicon octicon-link"></span></a>Shure MV7<a class="anchor-link" href="#Shure-MV7"> </a>
+</h4>
+<p>The product review we are going to scrap is the lastest dual USB;XLR microphone called Shure MV7.</p>
+<p><img src="https://techunwrapped.com/wp-content/uploads/2021/07/Shure-MV7-we-tested-what-could-be-the-best-mic.jpg" alt=""></p>
+<p>Shure is probabily the most well-known micphone company that Michael Jackson trusted.</p>
+<p><a href="https://www.youtube.com/watch?v=PjETXaGWPOY&amp;t=184s"><img src="data:image/jpeg;base64,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" alt="Watch the video"></a></p>
+<h2 id="Examining-the-webpage's-HTML-structure">
+<a class="anchor" href="#Examining-the-webpage's-HTML-structure" aria-hidden="true"><span class="octicon octicon-link"></span></a>Examining the webpage's HTML structure<a class="anchor-link" href="#Examining-the-webpage's-HTML-structure"> </a>
+</h2>
+<p>At the very beginning, let's first find some patterns from Amazon review page so that we can scrape it efficiently.</p>
+<h3 id="URL-trick">
+<a class="anchor" href="#URL-trick" aria-hidden="true"><span class="octicon octicon-link"></span></a>URL trick<a class="anchor-link" href="#URL-trick"> </a>
+</h3>
+<p>The link below is the url of the review page. As you can see, it is complicated, and we cannot really capture a pattern from it easily.</p>
+<blockquote>
+<p><a href="https://www.amazon.com/Shure-Microphone-Podcasting-Voice-Isolating-Technology/product-reviews/B08G7RG9ML/ref=cm_cr_dp_d_show_all_btm?ie=UTF8&amp;reviewerType=all_reviews">https://www.amazon.com/Shure-Microphone-Podcasting-Voice-Isolating-Technology/product-reviews/B08G7RG9ML/ref=cm_cr_dp_d_show_all_btm?ie=UTF8&amp;reviewerType=all_reviews</a>
+In actualality, the url can be shorten as below.
+<a href="https://www.amazon.com/product-reviews/B08G7RG9ML?th=1">https://www.amazon.com/product-reviews/B08G7RG9ML?th=1</a>
+THis looks clearer now. We go the the Amazon's product-reviews subpage, then it follows by an ASIN code where you can find it from amazon product information. Copy it!</p>
+</blockquote>
+<p><img src="https://live.staticflickr.com/65535/51928846302_fbf3842a0d_k.jpg%22" alt="product information"></p>
+<p>Eventually, the integer "1" on the url represents the first page of the review pages. We can change it to 2, 3, ... until the last page to check all reviews.</p>
+<h3 id="Inspect">
+<a class="anchor" href="#Inspect" aria-hidden="true"><span class="octicon octicon-link"></span></a>Inspect<a class="anchor-link" href="#Inspect"> </a>
+</h3>
+<p>Even though this looks complicated, but once we capture some patterns from inspection, we can easily get the data we need in a very efficient way. Here are some very fundamental knowledges about inspections that we are going to uitlize later on.</p>
+<p><img src="https://live.staticflickr.com/65535/51929824826_bd5855d8d3_k.jpg%22" alt="Inspect"></p>
+<p>To begin, we open the web page in the browser and use the inspect-element feature to inspect the elements. The HTML code for the web page can be found there. After some investigation, I discovered the following HTML structure, which renders the reviews on the web page.</p>
+<p><img src="https://live.staticflickr.com/65535/51930159484_ef7f8afe9f_k.jpg%22" alt="Inspect"></p>
+<p>There is a section on the reviews page with the id cm cr-review list. This division contains multiple sub-divisions where the review content is located. We intend to extract rating stars as well as review comments from the web page. To prepare a scheme for retrieving both star ratings and review comments, we need to go one level deeper into one of the other sub-divisions.</p>
+<p><img src="https://live.staticflickr.com/65535/51928846337_dcee4bb9d1_k.jpg%22" alt="Inspect"></p>
+<p>Upon closer examination, we can see that each review subdivision is further subdivided into multiple blocks. One of these blocks contains the required star ratings, while the others include the review text. When we look closer, we can see that the rating star division is represented by the class attribute "review-rating," and review texts are represented by the class "review-text." All we have to do now is use our Scrapy parser to pick up these patterns.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Examining-the-webpage's-HTML-structure">
+<a class="anchor" href="#Examining-the-webpage's-HTML-structure" aria-hidden="true"><span class="octicon octicon-link"></span></a>Examining the webpage's HTML structure<a class="anchor-link" href="#Examining-the-webpage's-HTML-structure"> </a>
+</h2>
+<p>At the very beginning, let's first find some patterns from Amazon review page so that we can scrape it efficiently.</p>
+<h3 id="URL-trick">
+<a class="anchor" href="#URL-trick" aria-hidden="true"><span class="octicon octicon-link"></span></a>URL trick<a class="anchor-link" href="#URL-trick"> </a>
+</h3>
+<p>The link below is the url of the review page. As you can see, it is complicated, and we cannot really capture a pattern from it easily.</p>
+<blockquote>
+<p><a href="https://www.amazon.com/Shure-Microphone-Podcasting-Voice-Isolating-Technology/product-reviews/B08G7RG9ML/ref=cm_cr_dp_d_show_all_btm?ie=UTF8&amp;reviewerType=all_reviews">https://www.amazon.com/Shure-Microphone-Podcasting-Voice-Isolating-Technology/product-reviews/B08G7RG9ML/ref=cm_cr_dp_d_show_all_btm?ie=UTF8&amp;reviewerType=all_reviews</a>
+In actualality, the url can be shorten as below.
+<a href="https://www.amazon.com/product-reviews/B08G7RG9ML?th=1">https://www.amazon.com/product-reviews/B08G7RG9ML?th=1</a>
+THis looks clearer now. We go the the Amazon's product-reviews subpage, then it follows by an ASIN code where you can find it from amazon product information. Copy it!</p>
+</blockquote>
+<p><img src="https://live.staticflickr.com/65535/51928846302_fbf3842a0d_k.jpg%22" alt="product information"></p>
+<p>Eventually, the integer "1" on the url represents the first page of the review pages. We can change it to 2, 3, ... until the last page to check all reviews.</p>
+<h3 id="Inspect">
+<a class="anchor" href="#Inspect" aria-hidden="true"><span class="octicon octicon-link"></span></a>Inspect<a class="anchor-link" href="#Inspect"> </a>
+</h3>
+<p>Even though this looks complicated, but once we capture some patterns from inspection, we can easily get the data we need in a very efficient way. Here are some very fundamental knowledges about inspections that we are going to uitlize later on.</p>
+<p><img src="https://live.staticflickr.com/65535/51929824826_bd5855d8d3_k.jpg%22" alt="Inspect"></p>
+<p>To begin, we open the web page in the browser and use the inspect-element feature to inspect the elements. The HTML code for the web page can be found there. After some investigation, I discovered the following HTML structure, which renders the reviews on the web page.</p>
+<p><img src="https://live.staticflickr.com/65535/51930159484_ef7f8afe9f_k.jpg%22" alt="Inspect"></p>
+<p>There is a section on the reviews page with the id cm cr-review list. This division contains multiple sub-divisions where the review content is located. We intend to extract rating stars as well as review comments from the web page. To prepare a scheme for retrieving both star ratings and review comments, we need to go one level deeper into one of the other sub-divisions.</p>
+<p><img src="https://live.staticflickr.com/65535/51928846337_dcee4bb9d1_k.jpg%22" alt="Inspect"></p>
+<p>Upon closer examination, we can see that each review subdivision is further subdivided into multiple blocks. One of these blocks contains the required star ratings, while the others include the review text. When we look closer, we can see that the rating star division is represented by the class attribute "review-rating," and review texts are represented by the class "review-text." All we have to do now is use our Scrapy parser to pick up these patterns.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Python-scrapy-parser-implementation">
+<a class="anchor" href="#Python-scrapy-parser-implementation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Python scrapy parser implementation<a class="anchor-link" href="#Python-scrapy-parser-implementation"> </a>
+</h2>
+<h3 id='Install-"scrapy"-package'>
+<a class="anchor" href="#Install-" scrapy aria-hidden="true"><span class="octicon octicon-link"></span></a>Install "scrapy" package<a class="anchor-link" href="#Install-%22scrapy%22-package"> </a>
+</h3>
+<p>First, let's install the scrapy package by enter the line below.</p>
+<blockquote>
+<p>pip install scrapy</p>
+</blockquote>
+<p>Then to create a scrapy project use following command.</p>
+<blockquote>
+<p>scrapy startproject amazon_reviews_scraping</p>
+</blockquote>
+<p>After entering the code, you should see these two. One is a folder that contains your scrapy code, and the other is your spacy configuration file. Spacy configuration while helps in running and deploying the Scrapy project on a server.</p>
+<p><img src="https://live.staticflickr.com/65535/51930448660_2e2fe05f30_b.jpg%22" alt="alt text">
+We'll need to creat a spider once we have a project in place. A spider is a piece of Python code that controls how a web page is scraped. It is the main component that crawls various web pages and extracts content from them. In our case, this will be the code chuck that will visit Amazon and scrape Amazon reviews. You can use the following command to make a spider.</p>
+<blockquote>
+<p>scrapy genspider amazon_review your-link-here</p>
+</blockquote>
+<p>The structure is like the image below.</p>
+<p><img src="https://live.staticflickr.com/65535/51928846092_e5be272254_h.jpg%22" alt="files in the new folder"></p>
+<h3 id="Files-description">
+<a class="anchor" href="#Files-description" aria-hidden="true"><span class="octicon octicon-link"></span></a>Files description<a class="anchor-link" href="#Files-description"> </a>
+</h3>
+<ul>
+<li>items.py 
+Items are containers that will be loaded with the scraped data.</li>
+</ul>
+<ul>
+<li>Middleware.py
+The spider middleware is a framework of hooks into Scrapy’s spider processing mechanism where you can plug custom functionality to process the responses that are sent to Spiders for processing and to handle the requests and items that are generated from spiders.</li>
+</ul>
+<ul>
+<li>Pipelines.py
+After an item has been scraped by a spider, it is sent to the Item Pipeline which processes it through several components that are executed sequentially. Each item pipeline component is a Python class.</li>
+</ul>
+<ul>
+<li>settings.py
+It allows one to customize the behaviour of all Scrapy components, including the core, extensions, pipelines and spiders themselves.</li>
+</ul>
+<ul>
+<li>spiders folder
+The Spiders is a directory which contains all spiders/crawlers as Python classes. Whenever one runs/crawls any spider, then scrapy looks into this directory and tries to find the spider with its name provided by the user. Spiders define how a certain site or a group of sites will be scraped, including how to perform the crawl and how to extract data from their pages.</li>
+</ul>
+<p><a href="https://www.blog.datahut.co/post/tutorial-how-to-scrape-amazon-data-using-python-scrapy">Here</a> is the deeper explaination about each files.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Defining-Scrapy-Parser-in-Python">
+<a class="anchor" href="#Defining-Scrapy-Parser-in-Python" aria-hidden="true"><span class="octicon octicon-link"></span></a>Defining Scrapy Parser in Python<a class="anchor-link" href="#Defining-Scrapy-Parser-in-Python"> </a>
+</h2>
+<p>Now we go to the spider folder and open the file reviews.py. In this process, we create two variables which are reviews_url and asin_list for convience later. Then we create a new function to request the website.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">reviews_url</span> <span class="o">=</span> <span class="s1">'https://www.amazon.com/product-reviews/</span><span class="si">{}</span><span class="s1">'</span>
+<span class="n">asin_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'B08G7RG9ML'</span><span class="p">]</span>
+
+<span class="k">class</span> <span class="nc">ReviewsSpider</span><span class="p">(</span><span class="n">scrapy</span><span class="o">.</span><span class="n">Spider</span><span class="p">):</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s1">'reviews'</span>
+
+    <span class="k">def</span> <span class="nf">start_requests</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">asin</span> <span class="ow">in</span> <span class="n">asin_list</span><span class="p">:</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="n">reviews_url</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">asin</span><span class="p">)</span>
+            <span class="k">yield</span> <span class="n">scrapy</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Then we download another package called <a href="https://pypi.org/project/scraper-helper/">scraper-helper</a> to make the process even easier.</p>
+<blockquote>
+<p>pip install scraper-helper</p>
+</blockquote>
+<p>Now we go to folder Amazon_reviews_scraping and open settings.py. We delete everything but these lines.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">scraper_helper</span> <span class="k">as</span> <span class="nn">sh</span>
+
+<span class="n">BOT_NAME</span> <span class="o">=</span> <span class="s1">'Amazon_reviews_scraping'</span>
+
+<span class="n">SPIDER_MODULES</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'Amazon_reviews_scraping.spiders'</span><span class="p">]</span>
+<span class="n">NEWSPIDER_MODULE</span> <span class="o">=</span> <span class="s1">'Amazon_reviews_scraping.spiders'</span>
+
+<span class="c1"># Obey robots.txt rules</span>
+<span class="n">ROBOTSTXT_OBEY</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="n">DEFAULT_REQUEST_HEADERS</span> <span class="o">=</span> <span class="n">sh</span><span class="o">.</span><span class="n">get_dict</span><span class="p">(</span>
+    <span class="sd">"""</span>
+<span class="sd">    accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9,</span>
+<span class="sd">    accept-encoding: deflate,</span>
+<span class="sd">    accept-language: en-US,en;q=0.9,</span>
+<span class="sd">    sec-ch-ua: "Chromium";v="88", "Google Chrome";v="88", ";Not A Brand";v="99",</span>
+<span class="sd">    sec-ch-ua-mobile: ?0,</span>
+<span class="sd">    sec-fetch-dest: document,</span>
+<span class="sd">    sec-fetch-mode: navigate,</span>
+<span class="sd">    sec-fetch-site: none,</span>
+<span class="sd">    sec-fetch-user: ?1,</span>
+<span class="sd">    upgrade-insecure-requests: 1,</span>
+<span class="sd">    user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.104 Safari/537.36</span>
+<span class="sd">"""</span>
+<span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We use the new import library method "get_dict" to convert the string lines from comments to dictions format. You can simply copy and paste this piece because this process required some html knowledge. After this, we fit the request header and can 
+successfully connect to the website.</p>
+<p>The next step is to go back the review.py and finish the function "parse". We open the inspect tool and can easily find that each star rating, data to review, and comments about the preduct has their own type unique headers, such as "[data-hook="review-star-rating"]" for star rating. We find each unique header and get each type of information we need.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">scrapy</span>
+
+<span class="n">reviews_url</span> <span class="o">=</span> <span class="s1">'https://www.amazon.com/product-reviews/</span><span class="si">{}</span><span class="s1">'</span>
+<span class="n">asin_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'B08G7RG9ML'</span><span class="p">]</span>
+
+<span class="k">class</span> <span class="nc">ReviewsSpider</span><span class="p">(</span><span class="n">scrapy</span><span class="o">.</span><span class="n">Spider</span><span class="p">):</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s1">'reviews'</span>
+
+    <span class="k">def</span> <span class="nf">start_requests</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">asin</span> <span class="ow">in</span> <span class="n">asin_list</span><span class="p">:</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="n">reviews_url</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">asin</span><span class="p">)</span>
+            <span class="k">yield</span> <span class="n">scrapy</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
+        <span class="c1">#print('Im in parse')</span>
+        <span class="k">for</span> <span class="n">review</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">css</span><span class="p">(</span><span class="s1">'[data-hook="review"]'</span><span class="p">):</span>
+            <span class="n">item</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">'name'</span><span class="p">:</span> <span class="n">review</span><span class="o">.</span><span class="n">css</span><span class="p">(</span><span class="s1">'.a-profile-name::text'</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+                <span class="s1">'stars1'</span><span class="p">:</span> <span class="n">review</span><span class="o">.</span><span class="n">css</span> <span class="p">(</span><span class="s1">'[data-hook="review-star-rating"] ::text'</span><span class="p">)</span> <span class="o">.</span><span class="n">get</span> <span class="p">(),</span>
+                <span class="s1">'stars2'</span><span class="p">:</span> <span class="n">review</span><span class="o">.</span><span class="n">css</span> <span class="p">(</span><span class="s1">'[data-hook="cmps-review-star-rating"] ::text'</span><span class="p">)</span> <span class="o">.</span><span class="n">get</span> <span class="p">(),</span>
+                <span class="s1">'date'</span><span class="p">:</span> <span class="n">review</span><span class="o">.</span><span class="n">css</span> <span class="p">(</span><span class="s1">'[data-hook="review-date"] ::text'</span><span class="p">)</span> <span class="o">.</span><span class="n">get</span> <span class="p">(),</span>
+                <span class="s1">'title'</span><span class="p">:</span> <span class="n">review</span><span class="o">.</span><span class="n">css</span> <span class="p">(</span><span class="s1">'[data-hook="review-title"] span ::text'</span><span class="p">)</span> <span class="o">.</span><span class="n">get</span> <span class="p">(),</span>
+                <span class="s1">'review'</span><span class="p">:</span> <span class="n">review</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s1">'normalize-space(.//*[@data-hook="review-body"])'</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+            <span class="p">}</span>
+            <span class="k">yield</span> <span class="n">item</span>
+
+        <span class="n">next_page</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s1">'//a[text ()="Next page"]/@href'</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">next_page</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">scrapy</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">urljoin</span><span class="p">(</span><span class="n">next_page</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Of course, after examining the css file, we can create a few lines to make sure after we scrape the date, it jump to the next page automatically and make sure we can collect enought data we need.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">next_page</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s1">'//a[text ()="Next page"]/@href'</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">next_page</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">scrapy</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">urljoin</span><span class="p">(</span><span class="n">next_page</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Eventually, we run the code below by using terminal.</p>
+<blockquote>
+<p>scrapy crawl reviews -o new_file_name.csv</p>
+</blockquote>
+<p>This will generate a new csv file to help us to store the data we request from Amazon.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Conclusion">
+<a class="anchor" href="#Conclusion" aria-hidden="true"><span class="octicon octicon-link"></span></a>Conclusion<a class="anchor-link" href="#Conclusion"> </a>
+</h2>
+<p>We did it!</p>
+<p>Even though the whole process looks easy, but there are still some unexpected things that are warting for you to explore. For example, for star rating, different countries have different headers like below.</p>
+<p>United States:</p>
+<blockquote>
+<p>[data-hook="review-star-rating"]</p>
+</blockquote>
+<p>Other countries:&gt; [data-hook="cmps-review-star-rating"]</p>
+<p>Another difficulty in scraping Amazon reviews is that Amazon tends to block IPs if you scrape Amazon frequently. This can be an impediment to your work.</p>
+<p>In such cases, make sure to rotate your IP addresses on a regular basis and make fewer requests to the Amazon server to avoid being blocked. More information can be found here.</p>
+<p>In the next blog, part 2, we are going to clean up the data and dig in the sentiment analysis.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="christopherGuan/sample-ds-blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/sample-ds-blog/spacy/python/machine%20learning/data%20mining/nlp/randomforest/2022/04/07/scraping1.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/sample-ds-blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/sample-ds-blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/sample-ds-blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>This site is built with fastpages.</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/christopherGuan" target="_blank" title="christopherGuan"><svg class="svg-icon grey"><use xlink:href="/sample-ds-blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/sample-ds-blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
