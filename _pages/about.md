@@ -4,7 +4,7 @@ title: About Chris
 permalink: /about/
 ---
 
-<img align="right" width="200" height="200" src="https://live.staticflickr.com/65535/51952965109_57e7884d89_c.jpg">
+<img align="right" width="200" height="200" src="https://media-exp1.licdn.com/dms/image/C4D03AQGaJqyUsEKxag/profile-displayphoto-shrink_400_400/0/1594996201311?e=1653523200&v=beta&t=CwhpuY2E1DZDIXwkaCLRsm6m-3Jp-3FT5ozWxFbIYhc">
 
 
 ## Courses
