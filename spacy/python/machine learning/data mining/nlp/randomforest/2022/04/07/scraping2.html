@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Scraping Amazon Reviews using Scrapy in Python Part 2 | Data Science Blog</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Scraping Amazon Reviews using Scrapy in Python Part 2" />
+<meta name="author" content="Zeyu Guan" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Are you looking for a method of scraping Amazon reviews and do not know where to begin with? In that case, you may find this blog very useful in scraping Amazon reviews." />
+<meta property="og:description" content="Are you looking for a method of scraping Amazon reviews and do not know where to begin with? In that case, you may find this blog very useful in scraping Amazon reviews." />
+<link rel="canonical" href="https://christopherguan.github.io/sample-ds-blog/spacy/python/machine%20learning/data%20mining/nlp/randomforest/2022/04/07/scraping2.html" />
+<meta property="og:url" content="https://christopherguan.github.io/sample-ds-blog/spacy/python/machine%20learning/data%20mining/nlp/randomforest/2022/04/07/scraping2.html" />
+<meta property="og:site_name" content="Data Science Blog" />
+<meta property="og:image" content="https://www.freecodecamp.org/news/content/images/2020/09/wall-5.jpeg" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-04-07T00:00:00-05:00" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta property="twitter:image" content="https://www.freecodecamp.org/news/content/images/2020/09/wall-5.jpeg" />
+<meta property="twitter:title" content="Scraping Amazon Reviews using Scrapy in Python Part 2" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Zeyu Guan"},"dateModified":"2022-04-07T00:00:00-05:00","datePublished":"2022-04-07T00:00:00-05:00","description":"Are you looking for a method of scraping Amazon reviews and do not know where to begin with? In that case, you may find this blog very useful in scraping Amazon reviews.","headline":"Scraping Amazon Reviews using Scrapy in Python Part 2","image":"https://www.freecodecamp.org/news/content/images/2020/09/wall-5.jpeg","mainEntityOfPage":{"@type":"WebPage","@id":"https://christopherguan.github.io/sample-ds-blog/spacy/python/machine%20learning/data%20mining/nlp/randomforest/2022/04/07/scraping2.html"},"url":"https://christopherguan.github.io/sample-ds-blog/spacy/python/machine%20learning/data%20mining/nlp/randomforest/2022/04/07/scraping2.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/sample-ds-blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://christopherguan.github.io/sample-ds-blog/feed.xml" title="Data Science Blog" /><link rel="shortcut icon" type="image/x-icon" href="/sample-ds-blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" /><script src="https://hypothes.is/embed.js" async></script>
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/sample-ds-blog/">Data Science Blog</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/sample-ds-blog/about/">About Chris</a><a class="page-link" href="/sample-ds-blog/search/">Search</a><a class="page-link" href="/sample-ds-blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Scraping Amazon Reviews using Scrapy in Python Part 2</h1><p class="page-description">Are you looking for a method of scraping Amazon reviews and do not know where to begin with? In that case, you may find this blog very useful in scraping Amazon reviews.</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2022-04-07T00:00:00-05:00" itemprop="datePublished">
+        Apr 7, 2022
+      </time>• 
+          <span itemprop="author" itemscope itemtype="http://schema.org/Person">
+            <span class="p-author h-card" itemprop="name">Zeyu Guan</span></span>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      5 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/sample-ds-blog/categories/#spaCy">spaCy</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/sample-ds-blog/categories/#Python">Python</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/sample-ds-blog/categories/#Machine Learning">Machine Learning</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/sample-ds-blog/categories/#Data Mining">Data Mining</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/sample-ds-blog/categories/#NLP">NLP</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/sample-ds-blog/categories/#RandomForest">RandomForest</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-justify-center">
+          <div class="px-2">
+
+    <a href="https://github.com/christopherGuan/sample-ds-blog/tree/master/_notebooks/2022-04-07-scraping2.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/sample-ds-blog/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://mybinder.org/v2/gh/christopherGuan/sample-ds-blog/master?filepath=_notebooks%2F2022-04-07-scraping2.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/sample-ds-blog/assets/badges/binder.svg" alt="Open In Binder"/>
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://colab.research.google.com/github/christopherGuan/sample-ds-blog/blob/master/_notebooks/2022-04-07-scraping2.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/sample-ds-blog/assets/badges/colab.svg" alt="Open In Colab"/>
+    </a>
+</div>
+          <div class="px-2">
+  <a href="https://deepnote.com/launch?url=https%3A%2F%2Fgithub.com%2FchristopherGuan%2Fsample-ds-blog%2Fblob%2Fmaster%2F_notebooks%2F2022-04-07-scraping2.ipynb" target="_blank">
+      <img class="notebook-badge-image" src="/sample-ds-blog/assets/badges/deepnote.svg" alt="Launch in Deepnote"/>
+  </a>
+</div>
+
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#Required-Packages">Required Packages </a></li>
+<li class="toc-entry toc-h2"><a href="#Now-let's-get-started!">Now let&#39;s get started! </a></li>
+<li class="toc-entry toc-h1"><a href="#Data-Cleaning">Data Cleaning </a></li>
+<li class="toc-entry toc-h1"><a href="#EDA">EDA </a></li>
+<li class="toc-entry toc-h1"><a href="#Sentiment-Analysis-(Method-1)">Sentiment Analysis (Method 1) </a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#What-is-sentiment-analysis?">What is sentiment analysis? </a></li>
+<li class="toc-entry toc-h2"><a href="#Build-up-the-first-model">Build up the first model </a></li>
+<li class="toc-entry toc-h2"><a href="#Testing">Testing </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h1"><a href="#Sentiment-Analysis-(Method-2)">Sentiment Analysis (Method 2) </a></li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2022-04-07-scraping2.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Required-Packages">
+<a class="anchor" href="#Required-Packages" aria-hidden="true"><span class="octicon octicon-link"></span></a>Required Packages<a class="anchor-link" href="#Required-Packages"> </a>
+</h2>
+<p><a href="https://github.com/amueller/word_cloud">wordcloud</a>, 
+<a href="https://geopandas.org/en/stable/getting_started/install.html">geopandas</a>, 
+<a href="https://pypi.org/project/nbformat/">nbformat</a>, 
+<a href="https://seaborn.pydata.org/installing.html">seaborn</a>, 
+<a href="https://scikit-learn.org/stable/install.html">scikit-learn</a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Now-let's-get-started!">
+<a class="anchor" href="#Now-let's-get-started!" aria-hidden="true"><span class="octicon octicon-link"></span></a>Now let's get started!<a class="anchor-link" href="#Now-let's-get-started!"> </a>
+</h2>
+<p>First thing first, you need to load all the necessary libraries:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">wordcloud</span> <span class="kn">import</span> <span class="n">WordCloud</span>
+<span class="kn">from</span> <span class="nn">wordcloud</span> <span class="kn">import</span> <span class="n">STOPWORDS</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objects</span> <span class="k">as</span> <span class="nn">go</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Data-Cleaning">
+<a class="anchor" href="#Data-Cleaning" aria-hidden="true"><span class="octicon octicon-link"></span></a>Data Cleaning<a class="anchor-link" href="#Data-Cleaning"> </a>
+</h1>
+<p>Following the previous blog, the raw data we scraped from Amazon look like below. 
+<img src="https://live.staticflickr.com/65535/51958371521_d139a6c0b1_h.jpg" alt="Raw Data"></p>
+<p>Even thought that looks relatively clean, but there are still some inperfections such as star1 and star2 need to be combined, date need to be splited, and etc. The whole process could be found from my <a href="https://github.com/christopherGuan/sample-ds-blog">github notebooks</a>.</p>
+<p>Below is data after cleaning. It contains 6 columns and more than 500 rows.</p>
+<p><img src="https://live.staticflickr.com/65535/51930037691_4a23b4c441_b.jpg" alt="Clean Data"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="EDA">
+<a class="anchor" href="#EDA" aria-hidden="true"><span class="octicon octicon-link"></span></a>EDA<a class="anchor-link" href="#EDA"> </a>
+</h1>
+<p>Below are the questions I curioused about, and the result generated by doing data analysis.</p>
+<ul>
+<li>
+<p>Which rating (1-5) got the most and least?
+<img src="https://live.staticflickr.com/65535/51929072567_d34db66693_h.jpg" alt="Which point was rated the most"></p>
+</li>
+<li>
+<p>Which country are they targeting?
+<img src="https://live.staticflickr.com/65535/51930675230_6314e2ccde_h.jpg" alt="Target Country"></p>
+</li>
+<li>
+<p>Which month people prefer to give a higher rating?
+<img src="https://live.staticflickr.com/65535/51929085842_0cb0aa6b06_w.jpg" alt="higher rating"></p>
+</li>
+<li>
+<p>Which month people leave commons the most?
+<img src="https://live.staticflickr.com/65535/51929085857_49f7c889d2_w.jpg" alt="More commons"></p>
+</li>
+</ul>
+<ul>
+<li>What are the useful words that people mentioned in the reviews?</li>
+</ul>
+<p><img src="https://live.staticflickr.com/65535/51930471329_82bf0c43b9.jpg" alt="More commons"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Sentiment-Analysis-(Method-1)">
+<a class="anchor" href="#Sentiment-Analysis-(Method-1)" aria-hidden="true"><span class="octicon octicon-link"></span></a>Sentiment Analysis (Method 1)<a class="anchor-link" href="#Sentiment-Analysis-(Method-1)"> </a>
+</h1>
+<h2 id="What-is-sentiment-analysis?">
+<a class="anchor" href="#What-is-sentiment-analysis?" aria-hidden="true"><span class="octicon octicon-link"></span></a>What is sentiment analysis?<a class="anchor-link" href="#What-is-sentiment-analysis?"> </a>
+</h2>
+<p>Essentially, sentiment analysis or sentiment classification fall under the broad category of text classification tasks in which you are given a phrase or a list of phrases and your classifier is expected to determine whether the sentiment behind that phrase is positive, negative, or neutral. To keep the problem as a binary classification problem, the third attribute is sometimes ignored. Recent tasks have taken into account sentiments such as "somewhat positive" and "somewhat negative."</p>
+<p>In this specific case, we catogrize 4 and 5 stars to the positive group and 1 &amp; 2 stars to the negative gorup.</p>
+<p><img src="https://live.staticflickr.com/65535/51930237493_b6afc18052_c.jpg" alt="rating"></p>
+<p>Below are the most frequently words in reviews from positive group and negative group respectively.</p>
+<p>Positive review
+<img src="https://live.staticflickr.com/65535/51930164126_33b911e6b3_c.jpg" alt="positive"></p>
+<p>Negative review
+<img src="https://live.staticflickr.com/65535/51930165221_cf61fce68e_c.jpg" alt="negative"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Build-up-the-first-model">
+<a class="anchor" href="#Build-up-the-first-model" aria-hidden="true"><span class="octicon octicon-link"></span></a>Build up the first model<a class="anchor-link" href="#Build-up-the-first-model"> </a>
+</h2>
+<p>Now we can build up a easy model that, as input, it will accept reviews. It will then predict whether the review will be positive or negative.</p>
+<p>Because this is a classification task, we will train a simple logistic regression model.</p>
+<ul>
+<li>
+<strong>Clean Data</strong>
+First, we create a new function to remove all punctuations from the data for later use.</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">remove_punctuation</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+    <span class="n">final</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">u</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">text</span> <span class="k">if</span> <span class="n">u</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"?"</span><span class="p">,</span> <span class="s2">"."</span><span class="p">,</span> <span class="s2">";"</span><span class="p">,</span> <span class="s2">":"</span><span class="p">,</span>  <span class="s2">"!"</span><span class="p">,</span><span class="s1">'"'</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">final</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li><strong>Split the Dataframe</strong></li>
+</ul>
+<p>Now, we split 80% of the dataset for training and 20% for testing. Meanwhile, each dataset should contain only two variables, one is to indicate positive or negative and another one is the reviews.</p>
+<p><img src="https://live.staticflickr.com/65535/51930294148_3a9db0297c_b.jpg" alt="output"></p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="s1">'random_number'</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">))</span>
+<span class="n">train</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">'random_number'</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mf">0.8</span><span class="p">]</span>
+<span class="n">test</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">'random_number'</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.8</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li><strong>Create a bag of words</strong></li>
+</ul>
+<p>Here I would like to introduce a new package.</p>
+<p><a href="https://scikit-learn.org/stable/install.html">Scikit-learn</a> is an open source machine learning library that supports supervised and unsupervised learning. It also provides various tools for model fitting, data preprocessing, model selection, model evaluation, and many other utilities.</p>
+<p>In this example, we are going to use <a href="https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.CountVectorizer.html?highlight=countvectorizer#sklearn.feature_extraction.text.CountVectorizer">sklearn.feature_extraction.text.CountVectorizer</a> to convert a collection of text documents to a matrix of token counts.</p>
+<p>The reason why we need to convert the text into a bag-of-words model is because the logistic regression algorithm cannot understand text.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">train_matrix</span> <span class="o">=</span> <span class="n">vectorizer</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">train</span><span class="p">[</span><span class="s1">'title'</span><span class="p">])</span>
+<span class="n">test_matrix</span> <span class="o">=</span> <span class="n">vectorizer</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">test</span><span class="p">[</span><span class="s1">'title'</span><span class="p">])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li><strong>Import Logistic Regression</strong></li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">LogisticRegression</span>
+<span class="n">lr</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li><strong>Split target and independent variables</strong></li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X_train</span> <span class="o">=</span> <span class="n">train_matrix</span>
+<span class="n">X_test</span> <span class="o">=</span> <span class="n">test_matrix</span>
+<span class="n">y_train</span> <span class="o">=</span> <span class="n">train</span><span class="p">[</span><span class="s1">'sentiment'</span><span class="p">]</span>
+<span class="n">y_test</span> <span class="o">=</span> <span class="n">test</span><span class="p">[</span><span class="s1">'sentiment'</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li><strong>Fit model on data</strong></li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">lr</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span><span class="n">y_train</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li><strong>Make predictionsa</strong></li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">predictions</span> <span class="o">=</span> <span class="n">lr</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The output will be either 1 or -1. As we assumed before, 1 presents the model predict the review is a positive review and vice versa.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Testing">
+<a class="anchor" href="#Testing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Testing<a class="anchor-link" href="#Testing"> </a>
+</h2>
+<p>Now, we can test the accuracy of our model!</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">confusion_matrix</span><span class="p">,</span> <span class="n">classification_report</span>
+<span class="n">new</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">y_test</span><span class="p">)</span>
+<span class="n">confusion_matrix</span><span class="p">(</span><span class="n">predictions</span><span class="p">,</span><span class="n">y_test</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">classification_report</span><span class="p">(</span><span class="n">predictions</span><span class="p">,</span><span class="n">y_test</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="https://live.staticflickr.com/65535/51929260132_045027628c_z.jpg" alt="accuracy"></p>
+<p>The accuracy is as high as 89%!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Sentiment-Analysis-(Method-2)">
+<a class="anchor" href="#Sentiment-Analysis-(Method-2)" aria-hidden="true"><span class="octicon octicon-link"></span></a>Sentiment Analysis (Method 2)<a class="anchor-link" href="#Sentiment-Analysis-(Method-2)"> </a>
+</h1>
+<p>In this process, you will learn how to build your own sentiment analysis classifier using Python and understand the basics of NLP (natural language processing). First, let's try to use a quick and dirty method to utilize the <a href="https://www.datacamp.com/community/tutorials/simplifying-sentiment-analysis-python">Naive Bayes classifier</a> to predict the sentiments of Amazon product review.</p>
+<p>Based on the application's requirements, we should first put each review in a txt file and catogorize them as negative or positive review in different folder.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">neg</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">"sentiment"</span><span class="p">]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">review</span>
+
+<span class="c1">#Reset the index</span>
+<span class="n">neg</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">neg</span><span class="o">.</span><span class="n">index</span><span class="p">))</span>
+
+<span class="c1">## Write each DataFrame to separate txt</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">neg</span><span class="p">)):</span>          
+    <span class="n">data</span> <span class="o">=</span> <span class="n">neg</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s2">".txt"</span><span class="p">,</span><span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Next, we sort the order of the official data and remove all the content. In other words, we only keep the file name.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="c1">#Get file names</span>
+<span class="n">file_names</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="s1">'/Users/zeyu/nltk_data/corpora/movie_reviews/neg'</span><span class="p">)</span>
+
+<span class="c1">#Convert pandas</span>
+<span class="n">neg_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="p">(</span><span class="n">file_names</span><span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'file_name'</span><span class="p">])</span>
+
+<span class="c1">#split to sort</span>
+<span class="n">neg_df</span><span class="p">[[</span><span class="s1">'number'</span><span class="p">,</span><span class="s1">'id'</span><span class="p">]]</span> <span class="o">=</span> <span class="n">neg_df</span><span class="o">.</span><span class="n">file_name</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+   <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"_"</span><span class="p">)))</span>
+
+<span class="c1">#change the number to be the index</span>
+<span class="n">neg_df_index</span> <span class="o">=</span> <span class="n">neg_df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">'number'</span><span class="p">)</span>
+<span class="n">neg_org</span> <span class="o">=</span> <span class="n">neg_df_index</span><span class="o">.</span><span class="n">sort_index</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1">#del neg["id"]</span>
+<span class="n">neg_org</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">neg_org</span> <span class="o">=</span> <span class="n">neg_org</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">neg_names</span> <span class="o">=</span> <span class="n">neg_org</span><span class="p">[</span><span class="s1">'file_name'</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">file_name</span> <span class="ow">in</span> <span class="n">neg_names</span><span class="p">:</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s1">'/Users/zeyu/nltk_data/corpora/movie_reviews/neg/</span><span class="si">{</span><span class="n">file_name</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">)</span>
+    <span class="n">t</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span>
+    <span class="n">t</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Next, we insert the content of amazon review to the official files with their original file names.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">file_names</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="s1">'/Users/zeyu/Desktop/DS/neg'</span><span class="p">)</span>
+
+<span class="c1">#Convert pandas</span>
+<span class="n">pos_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="p">(</span><span class="n">file_names</span><span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'file_name'</span><span class="p">])</span>
+
+<span class="n">pos_names</span> <span class="o">=</span> <span class="n">pos_df</span><span class="p">[</span><span class="s1">'file_name'</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">file_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pos_names</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span> 
+
+        <span class="n">t</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s1">'/Users/zeyu/Desktop/DS/neg/</span><span class="si">{</span><span class="n">file_name</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">)</span>
+        <span class="c1"># t.write("")</span>
+        <span class="n">t_val</span> <span class="o">=</span> <span class="n">ascii</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        
+        <span class="n">writefname</span> <span class="o">=</span> <span class="n">pos_names_org</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s1">'/Users/zeyu/nltk_data/corpora/movie_reviews/neg/</span><span class="si">{</span><span class="n">writefname</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">)</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">t_val</span><span class="p">)</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1"> Reading/writing Error'</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Eventually, we can just run these few lines to predict the sentiments of Amazon product review.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">nltk</span>
+<span class="kn">from</span> <span class="nn">nltk.corpus</span> <span class="kn">import</span> <span class="n">movie_reviews</span>
+<span class="kn">import</span> <span class="nn">random</span>
+
+<span class="n">documents</span> <span class="o">=</span> <span class="p">[(</span><span class="nb">list</span><span class="p">(</span><span class="n">movie_reviews</span><span class="o">.</span><span class="n">words</span><span class="p">(</span><span class="n">fileid</span><span class="p">)),</span> <span class="n">category</span><span class="p">)</span>
+              <span class="k">for</span> <span class="n">category</span> <span class="ow">in</span> <span class="n">movie_reviews</span><span class="o">.</span><span class="n">categories</span><span class="p">()</span>
+              <span class="k">for</span> <span class="n">fileid</span> <span class="ow">in</span> <span class="n">movie_reviews</span><span class="o">.</span><span class="n">fileids</span><span class="p">(</span><span class="n">category</span><span class="p">)]</span>
+
+<span class="c1">#All words, not unique.          </span>
+<span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">documents</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">all_words</span> <span class="o">=</span> <span class="n">nltk</span><span class="o">.</span><span class="n">FreqDist</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">movie_reviews</span><span class="o">.</span><span class="n">words</span><span class="p">())</span>
+
+
+<span class="c1">#Only show first 2000.</span>
+<span class="n">word_features</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">all_words</span><span class="p">)[:</span><span class="mi">2000</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">document_features</span><span class="p">(</span><span class="n">document</span><span class="p">):</span>
+    <span class="n">document_words</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">document</span><span class="p">)</span>
+    <span class="n">features</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">word_features</span><span class="p">:</span>
+        <span class="n">features</span><span class="p">[</span><span class="s1">'contains(</span><span class="si">{}</span><span class="s1">)'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">word</span><span class="p">)]</span> <span class="o">=</span> <span class="p">(</span><span class="n">word</span> <span class="ow">in</span> <span class="n">document_words</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">features</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">featuresets</span> <span class="o">=</span> <span class="p">[(</span><span class="n">document_features</span><span class="p">(</span><span class="n">d</span><span class="p">),</span> <span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">d</span><span class="p">,</span><span class="n">c</span><span class="p">)</span> <span class="ow">in</span> <span class="n">documents</span><span class="p">]</span>
+<span class="n">train_set</span><span class="p">,</span> <span class="n">test_set</span> <span class="o">=</span> <span class="n">featuresets</span><span class="p">[</span><span class="mi">100</span><span class="p">:],</span> <span class="n">featuresets</span><span class="p">[:</span><span class="mi">100</span><span class="p">]</span>
+<span class="n">classifier</span> <span class="o">=</span> <span class="n">nltk</span><span class="o">.</span><span class="n">NaiveBayesClassifier</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">train_set</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">nltk</span><span class="o">.</span><span class="n">classify</span><span class="o">.</span><span class="n">accuracy</span><span class="p">(</span><span class="n">classifier</span><span class="p">,</span> <span class="n">test_set</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">classifier</span><span class="o">.</span><span class="n">show_most_informative_features</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+</div>
+
+
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="christopherGuan/sample-ds-blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/sample-ds-blog/spacy/python/machine%20learning/data%20mining/nlp/randomforest/2022/04/07/scraping2.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/sample-ds-blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/sample-ds-blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/sample-ds-blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>This site is built with fastpages.</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/christopherGuan" target="_blank" title="christopherGuan"><svg class="svg-icon grey"><use xlink:href="/sample-ds-blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/sample-ds-blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
