@@ -1,0 +1,2203 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Introducing spaCy For NLP | Data Science Blog</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Introducing spaCy For NLP" />
+<meta name="author" content="Zeyu Guan" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="This spaCy tutorial explains and applies the introduction to spaCy and features of spaCy for NLP based on the spaCy 101." />
+<meta property="og:description" content="This spaCy tutorial explains and applies the introduction to spaCy and features of spaCy for NLP based on the spaCy 101." />
+<link rel="canonical" href="https://christopherguan.github.io/sample-ds-blog/spacy/python/machine%20learning/data%20mining/nlp/randomforest/2022/03/31/spaCy.html" />
+<meta property="og:url" content="https://christopherguan.github.io/sample-ds-blog/spacy/python/machine%20learning/data%20mining/nlp/randomforest/2022/03/31/spaCy.html" />
+<meta property="og:site_name" content="Data Science Blog" />
+<meta property="og:image" content="https://spacy.io/static/social_default-1d3b50b1eba4c2b06244425ff0c49570.jpg" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-03-31T00:00:00-05:00" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta property="twitter:image" content="https://spacy.io/static/social_default-1d3b50b1eba4c2b06244425ff0c49570.jpg" />
+<meta property="twitter:title" content="Introducing spaCy For NLP" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Zeyu Guan"},"dateModified":"2022-03-31T00:00:00-05:00","datePublished":"2022-03-31T00:00:00-05:00","description":"This spaCy tutorial explains and applies the introduction to spaCy and features of spaCy for NLP based on the spaCy 101.","headline":"Introducing spaCy For NLP","image":"https://spacy.io/static/social_default-1d3b50b1eba4c2b06244425ff0c49570.jpg","mainEntityOfPage":{"@type":"WebPage","@id":"https://christopherguan.github.io/sample-ds-blog/spacy/python/machine%20learning/data%20mining/nlp/randomforest/2022/03/31/spaCy.html"},"url":"https://christopherguan.github.io/sample-ds-blog/spacy/python/machine%20learning/data%20mining/nlp/randomforest/2022/03/31/spaCy.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/sample-ds-blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://christopherguan.github.io/sample-ds-blog/feed.xml" title="Data Science Blog" /><link rel="shortcut icon" type="image/x-icon" href="/sample-ds-blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" /><script src="https://hypothes.is/embed.js" async></script>
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/sample-ds-blog/">Data Science Blog</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/sample-ds-blog/about/">About Chris</a><a class="page-link" href="/sample-ds-blog/search/">Search</a><a class="page-link" href="/sample-ds-blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Introducing spaCy For NLP</h1><p class="page-description">This spaCy tutorial explains and applies the introduction to spaCy and features of spaCy for NLP based on the <a href='https://spacy.io/usage/spacy-101'>spaCy 101</a>.</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2022-03-31T00:00:00-05:00" itemprop="datePublished">
+        Mar 31, 2022
+      </time>• 
+          <span itemprop="author" itemscope itemtype="http://schema.org/Person">
+            <span class="p-author h-card" itemprop="name">Zeyu Guan</span></span>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      19 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/sample-ds-blog/categories/#spaCy">spaCy</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/sample-ds-blog/categories/#Python">Python</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/sample-ds-blog/categories/#Machine Learning">Machine Learning</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/sample-ds-blog/categories/#Data Mining">Data Mining</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/sample-ds-blog/categories/#NLP">NLP</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/sample-ds-blog/categories/#RandomForest">RandomForest</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-justify-center">
+          <div class="px-2">
+
+    <a href="https://github.com/christopherGuan/sample-ds-blog/tree/master/_notebooks/2022-03-31-spaCy.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/sample-ds-blog/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://mybinder.org/v2/gh/christopherGuan/sample-ds-blog/master?filepath=_notebooks%2F2022-03-31-spaCy.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/sample-ds-blog/assets/badges/binder.svg" alt="Open In Binder"/>
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://colab.research.google.com/github/christopherGuan/sample-ds-blog/blob/master/_notebooks/2022-03-31-spaCy.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/sample-ds-blog/assets/badges/colab.svg" alt="Open In Colab"/>
+    </a>
+</div>
+          <div class="px-2">
+  <a href="https://deepnote.com/launch?url=https%3A%2F%2Fgithub.com%2FchristopherGuan%2Fsample-ds-blog%2Fblob%2Fmaster%2F_notebooks%2F2022-03-31-spaCy.ipynb" target="_blank">
+      <img class="notebook-badge-image" src="/sample-ds-blog/assets/badges/deepnote.svg" alt="Launch in Deepnote"/>
+  </a>
+</div>
+
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#First,-what-is-spacy?">First, what is spacy? </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#1.-Part-of-Speech-(POS)-Tagging-using-spaCy">1. Part-of-Speech (POS) Tagging using spaCy </a></li>
+<li class="toc-entry toc-h3"><a href="#2.-Dependency-Parsing-using-spaCy">2. Dependency Parsing using spaCy </a></li>
+<li class="toc-entry toc-h3"><a href="#3.-Named-Entity-Recognition-using-spaCy">3. Named Entity Recognition using spaCy </a></li>
+<li class="toc-entry toc-h3"><a href="#4.-Rule-Based-Matching-using-spaCy">4. Rule-Based Matching using spaCy </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Now,-let’s-get-our-hands-dirty-with-spaCy.">Now, let’s get our hands dirty with spaCy. </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#First,-let's-play-around.">First, let&#39;s play around. </a></li>
+<li class="toc-entry toc-h3"><a href="#Acquiring-Text">Acquiring Text </a></li>
+<li class="toc-entry toc-h3"><a href="#Natural-Language-Understanding">Natural Language Understanding </a></li>
+<li class="toc-entry toc-h3"><a href="#Text-Comparison-with-spaCy-and-Scattertext">Text Comparison with spaCy and Scattertext </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h1"><a href="#Conclusion">Conclusion </a></li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2022-03-31-spaCy.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="First,-what-is-spacy?">
+<a class="anchor" href="#First,-what-is-spacy?" aria-hidden="true"><span class="octicon octicon-link"></span></a>First, what is spacy?<a class="anchor-link" href="#First,-what-is-spacy?"> </a>
+</h2>
+<p>SpaCy is a free, open-source library for advanced Natural Language Processing (NLP) in Python that allows you to perform extensive natural language processing analysis and develop models that may be used to support document analysis, chatbot capabilities, and other types of text analysis.</p>
+<p>This blog should cover a few features you need to know about spaCy, whether you're new to it or just want to brush up on some NLP basics and implementation specifics.</p>
+<p>It's become one of the most extensively used natural language libraries in Python for corporate use cases, and it has a sizable community—and with it, a lot of support for commercializing research breakthroughs as this field evolves rapidly.</p>
+<p>After downloading a list of packages, we can load spaCy and run some code like below. That nlp variable, which is loaded with the en_core_web_sm small model for English.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">spacy</span>
+<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'en_core_web_sm'</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Next, let's run a small "document" through the natural language parser:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">"He went to play basketball"</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>nlp.pipe_names</strong> shows spaCy’s processing pipeline. The NLP pipeline has multiple components, such as tokenizer, tagger, parser, ner, etc. So, the input text string has to go through all these components before we can work on it.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">nlp</span><span class="o">.</span><span class="n">pipe_names</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>['tok2vec', 'tagger', 'parser', 'attribute_ruler', 'lemmatizer', 'ner']</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Just in case you wish to disable the pipeline components and keep only the tokenizer up and running, then you can use the code <strong>nlp.disable_pipes</strong> to disable the pipeline components:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">nlp</span><span class="o">.</span><span class="n">disable_pipes</span><span class="p">(</span><span class="s1">'tagger'</span><span class="p">,</span> <span class="s1">'parser'</span><span class="p">)</span>
+<span class="n">nlp</span><span class="o">.</span><span class="n">pipe_names</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>['tok2vec', 'attribute_ruler', 'lemmatizer', 'ner']</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In the following section, you will learn to perform various NLP tasks using spaCy. We will start off with the popular NLP tasks of Part-of-Speech Tagging, Dependency Parsing, and Named Entity Recognition.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="1.-Part-of-Speech-(POS)-Tagging-using-spaCy">
+<a class="anchor" href="#1.-Part-of-Speech-(POS)-Tagging-using-spaCy" aria-hidden="true"><span class="octicon octicon-link"></span></a>1. Part-of-Speech (POS) Tagging using spaCy<a class="anchor-link" href="#1.-Part-of-Speech-(POS)-Tagging-using-spaCy"> </a>
+</h3>
+<p>In English, nouns, pronouns, adjectives, verbs, and adverbs are some of the most prevalent parts of speech. The task of automatically assigning POS tags to all the words in a sentence is known as POS tagging. It's useful for a variety of downstream NLP applications, including feature engineering, language comprehension, and information extraction.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">doc</span><span class="p">:</span>
+    <span class="c1"># Print the token and its part-of-speech tag</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="s2">"--&gt;"</span><span class="p">,</span> <span class="n">token</span><span class="o">.</span><span class="n">pos_</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>He --&gt; PRON
+went --&gt; VERB
+to --&gt; PART
+play --&gt; VERB
+basketball --&gt; NOUN
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="2.-Dependency-Parsing-using-spaCy">
+<a class="anchor" href="#2.-Dependency-Parsing-using-spaCy" aria-hidden="true"><span class="octicon octicon-link"></span></a>2. Dependency Parsing using spaCy<a class="anchor-link" href="#2.-Dependency-Parsing-using-spaCy"> </a>
+</h3>
+<p>Every sentence has a grammatical structure, which may be extracted with the assistance of dependency parsing. It can alternatively be viewed as a directed graph, with nodes corresponding to the words in the sentence and edges between nodes corresponding to the word dependencies. Performing dependency parsing in spaCy is simple as well. We'll use the same document we did for POS labeling here:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">doc</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="s2">"--&gt;"</span><span class="p">,</span> <span class="n">token</span><span class="o">.</span><span class="n">dep_</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>He --&gt; nsubj
+went --&gt; ROOT
+to --&gt; aux
+play --&gt; advcl
+basketball --&gt; dobj
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="3.-Named-Entity-Recognition-using-spaCy">
+<a class="anchor" href="#3.-Named-Entity-Recognition-using-spaCy" aria-hidden="true"><span class="octicon octicon-link"></span></a>3. Named Entity Recognition using spaCy<a class="anchor-link" href="#3.-Named-Entity-Recognition-using-spaCy"> </a>
+</h3>
+<p>What entities are. Entities are words or collections of words that represent information about everyday objects like people, places, and organizations. These things have official names. Like the example below, Today is a date. Chris is assumed as a person.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">"Today is March 21, and Chris has already spent a few hours on this project in the United States."</span><span class="p">)</span>
+ 
+<span class="k">for</span> <span class="n">ent</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">ents</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">ent</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="n">ent</span><span class="o">.</span><span class="n">label_</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Today DATE
+March 21 DATE
+Chris PERSON
+a few hours TIME
+the United States GPE
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/site-packages/spacy/pipeline/lemmatizer.py:211: UserWarning: [W108] The rule-based lemmatizer did not find POS annotation for one or more tokens. Check that your pipeline includes components that assign token.pos, typically 'tagger'+'attribute_ruler' or 'morphologizer'.
+  warnings.warn(Warnings.W108)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="4.-Rule-Based-Matching-using-spaCy">
+<a class="anchor" href="#4.-Rule-Based-Matching-using-spaCy" aria-hidden="true"><span class="octicon octicon-link"></span></a>4. Rule-Based Matching using spaCy<a class="anchor-link" href="#4.-Rule-Based-Matching-using-spaCy"> </a>
+</h3>
+<p>It's hard to explain the meaning of Rule-Based matching using spacy; however, the output of the following code demenstrate the meaning cristal clear. With this spaCy matcher, you can find words and phrases in the text using user-defined rules.</p>
+<p>So, in the code below:</p>
+<ul>
+<li>First, we import the spaCy matcher</li>
+<li>After that, we initialize the matcher object with the default spaCy vocabulary</li>
+<li>Then, we pass the input in an NLP object as usual</li>
+<li>In the next step, we define the rule/pattern for what we want to extract from the text.</li>
+</ul>
+<p>Let's imagine we're looking for the term "lemon water" in a text. As a result, our goal is for the matcher to be able to discover this pattern in the text whenever "lemon" is followed by the word "water." That's exactly what we did in the code above when defining the pattern. Finally, the defined rule is applied to the matcher object.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">spacy.matcher</span> <span class="kn">import</span> <span class="n">Matcher</span>
+<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"en_core_web_sm"</span><span class="p">)</span>
+
+<span class="c1"># Initialize the matcher with the spaCy vocabulary</span>
+<span class="n">matcher</span> <span class="o">=</span> <span class="n">Matcher</span><span class="p">(</span><span class="n">nlp</span><span class="o">.</span><span class="n">vocab</span><span class="p">)</span>
+
+<span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">"Some people start their day with lemon water"</span><span class="p">)</span>
+
+<span class="c1"># Define rule</span>
+<span class="n">pattern</span> <span class="o">=</span> <span class="p">[{</span><span class="s1">'TEXT'</span><span class="p">:</span> <span class="s1">'lemon'</span><span class="p">},</span> <span class="p">{</span><span class="s1">'TEXT'</span><span class="p">:</span> <span class="s1">'water'</span><span class="p">}]</span>
+
+<span class="c1"># Add rule</span>
+<span class="n">matcher</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">'rule_1'</span><span class="p">,[</span><span class="n">pattern</span><span class="p">])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">matcher</span><span class="p">(</span><span class="n">doc</span><span class="p">))</span>
+
+<span class="n">matches</span> <span class="o">=</span> <span class="n">matcher</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+<span class="n">matches</span>
+
+<span class="c1"># Extract matched text</span>
+<span class="k">for</span> <span class="n">match_id</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="ow">in</span> <span class="n">matches</span><span class="p">:</span>
+    <span class="c1"># Get the matched span</span>
+    <span class="n">matched_span</span> <span class="o">=</span> <span class="n">doc</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">matched_span</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[(7604275899133490726, 6, 8)]
+lemon water
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The output above has three elements. The first element, ‘7604275899133490726’, is the match ID. The second and third elements are the positions of the matched tokens.</p>
+<p>Let's have a look at another application of the spaCy matcher. Consider the following two sentences:</p>
+<ul>
+<li>You can read this book</li>
+<li>I will book my ticket</li>
+</ul>
+<p>We are now interested in determining whether or not a sentence contains the word "book." It appears to be quite simple, doesn't it? But here's the catch: we can only find the word "book" if it was used as a noun in the sentence.</p>
+<p>The word "book" was used as a noun in the first sentence and as a verb in the second sentence. As a result, the spaCy matcher should only be able to extract the pattern from the first sentence. Let's put it to the test:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">doc1</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">"You read this book"</span><span class="p">)</span>
+<span class="n">doc2</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">"I will book my ticket"</span><span class="p">)</span>
+
+<span class="c1">#Text and POS are required</span>
+<span class="n">pattern</span> <span class="o">=</span> <span class="p">[{</span><span class="s1">'TEXT'</span><span class="p">:</span> <span class="s1">'book'</span><span class="p">,</span> <span class="s1">'POS'</span><span class="p">:</span> <span class="s1">'NOUN'</span><span class="p">}]</span>
+
+<span class="c1"># Initialize the matcher with the shared vocab</span>
+<span class="n">matcher</span> <span class="o">=</span> <span class="n">Matcher</span><span class="p">(</span><span class="n">nlp</span><span class="o">.</span><span class="n">vocab</span><span class="p">)</span>
+<span class="n">matcher</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">'rule_2'</span><span class="p">,</span> <span class="p">[</span><span class="n">pattern</span><span class="p">])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"doc1: "</span><span class="p">,</span> <span class="n">matcher</span><span class="p">(</span><span class="n">doc1</span><span class="p">),</span><span class="s2">"</span><span class="se">\n</span><span class="s2">doc2: "</span><span class="p">,</span> <span class="n">matcher</span><span class="p">(</span><span class="n">doc2</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>doc1:  [(375134486054924901, 3, 4)] 
+doc2:  []
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This was a quick overview to give you an idea of what spaCy can do. Trust me, you'll find yourself using spaCy frequently for NLP tasks. I encourage you to experiment with the code, download a dataset from DataHack, and try your hand at it with spaCy.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Now,-let’s-get-our-hands-dirty-with-spaCy.">
+<a class="anchor" href="#Now,-let%E2%80%99s-get-our-hands-dirty-with-spaCy." aria-hidden="true"><span class="octicon octicon-link"></span></a>Now, let’s get our hands dirty with spaCy.<a class="anchor-link" href="#Now,-let%E2%80%99s-get-our-hands-dirty-with-spaCy."> </a>
+</h2>
+<h3 id="First,-let's-play-around.">
+<a class="anchor" href="#First,-let's-play-around." aria-hidden="true"><span class="octicon octicon-link"></span></a>First, let's play around.<a class="anchor-link" href="#First,-let's-play-around."> </a>
+</h3>
+<p>That <strong>nlp</strong> variable is now your gateway to all things spaCy and loaded with the <strong>en_core_web_sm</strong> small model for English. Next, let's run a small "document" through the natural language parser.</p>
+<p>We started by making a doc out of the text, which is a container for a document and all of its annotations. Then we went through the document iteratively to see what spaCy had parsed.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">spacy</span>
+<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"en_core_web_sm"</span><span class="p">)</span>
+
+<span class="n">text</span> <span class="o">=</span> <span class="s2">"The rain in Spain falls mainly on the plain."</span>
+<span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
+<span class="c1"># stoplist</span>
+<span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">doc</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="n">token</span><span class="o">.</span><span class="n">lemma_</span><span class="p">,</span> <span class="n">token</span><span class="o">.</span><span class="n">pos_</span><span class="p">,</span> <span class="n">token</span><span class="o">.</span><span class="n">is_stop</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>The the DET True
+rain rain NOUN False
+in in ADP True
+Spain Spain PROPN False
+falls fall VERB False
+mainly mainly ADV False
+on on ADP True
+the the DET True
+plain plain NOUN False
+. . PUNCT False
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>It's good, but there's a lot of information and it's a little difficult to read. Let's make the spaCy parse of that sentence into a pandas dataframe:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="n">cols</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"text"</span><span class="p">,</span> <span class="s2">"lemma"</span><span class="p">,</span> <span class="s2">"POS"</span><span class="p">,</span> <span class="s2">"explain"</span><span class="p">,</span> <span class="s2">"stopword"</span><span class="p">)</span>
+<span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">doc</span><span class="p">:</span>
+    <span class="n">row</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">lemma_</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">pos_</span><span class="p">,</span> <span class="n">spacy</span><span class="o">.</span><span class="n">explain</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">pos_</span><span class="p">),</span> <span class="n">t</span><span class="o">.</span><span class="n">is_stop</span><span class="p">]</span>
+    <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">cols</span><span class="p">)</span>
+<span class="n">df</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>text</th>
+      <th>lemma</th>
+      <th>POS</th>
+      <th>explain</th>
+      <th>stopword</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>The</td>
+      <td>the</td>
+      <td>DET</td>
+      <td>determiner</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>rain</td>
+      <td>rain</td>
+      <td>NOUN</td>
+      <td>noun</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>in</td>
+      <td>in</td>
+      <td>ADP</td>
+      <td>adposition</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Spain</td>
+      <td>Spain</td>
+      <td>PROPN</td>
+      <td>proper noun</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>falls</td>
+      <td>fall</td>
+      <td>VERB</td>
+      <td>verb</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>mainly</td>
+      <td>mainly</td>
+      <td>ADV</td>
+      <td>adverb</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>on</td>
+      <td>on</td>
+      <td>ADP</td>
+      <td>adposition</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>the</td>
+      <td>the</td>
+      <td>DET</td>
+      <td>determiner</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>plain</td>
+      <td>plain</td>
+      <td>NOUN</td>
+      <td>noun</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>.</td>
+      <td>.</td>
+      <td>PUNCT</td>
+      <td>punctuation</td>
+      <td>False</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Next, let's use the displaCy library to visualize the <a href="https://en.wikipedia.org/wiki/Parse_tree#:~:text=A%20parse%20tree%20or%20parsing,to%20some%20context%2Dfree%20grammar.">parse tree</a> for the sentence. If you are familier with parse tree, a parse tree, also known as a parsing tree, derivation tree, or concrete syntax tree, is a rooted tree that represents the syntactic structure of a string according to some context-free grammar.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">spacy</span> <span class="kn">import</span> <span class="n">displacy</span>
+<span class="n">displacy</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">"dep"</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+<span class="tex2jax_ignore"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:lang="en" id="5e42e13aec4f47c2afc98862db1c9779-0" class="displacy" width="1625" height="399.5" direction="ltr" style="max-width: none; height: 399.5px; color: #000000; background: #ffffff; font-family: Arial; direction: ltr">
+<text class="displacy-token" fill="currentColor" text-anchor="middle" y="309.5">
+    <tspan class="displacy-word" fill="currentColor" x="50">The</tspan>
+    <tspan class="displacy-tag" dy="2em" fill="currentColor" x="50">DET</tspan>
+</text>
+
+<text class="displacy-token" fill="currentColor" text-anchor="middle" y="309.5">
+    <tspan class="displacy-word" fill="currentColor" x="225">rain</tspan>
+    <tspan class="displacy-tag" dy="2em" fill="currentColor" x="225">NOUN</tspan>
+</text>
+
+<text class="displacy-token" fill="currentColor" text-anchor="middle" y="309.5">
+    <tspan class="displacy-word" fill="currentColor" x="400">in</tspan>
+    <tspan class="displacy-tag" dy="2em" fill="currentColor" x="400">ADP</tspan>
+</text>
+
+<text class="displacy-token" fill="currentColor" text-anchor="middle" y="309.5">
+    <tspan class="displacy-word" fill="currentColor" x="575">Spain</tspan>
+    <tspan class="displacy-tag" dy="2em" fill="currentColor" x="575">PROPN</tspan>
+</text>
+
+<text class="displacy-token" fill="currentColor" text-anchor="middle" y="309.5">
+    <tspan class="displacy-word" fill="currentColor" x="750">falls</tspan>
+    <tspan class="displacy-tag" dy="2em" fill="currentColor" x="750">VERB</tspan>
+</text>
+
+<text class="displacy-token" fill="currentColor" text-anchor="middle" y="309.5">
+    <tspan class="displacy-word" fill="currentColor" x="925">mainly</tspan>
+    <tspan class="displacy-tag" dy="2em" fill="currentColor" x="925">ADV</tspan>
+</text>
+
+<text class="displacy-token" fill="currentColor" text-anchor="middle" y="309.5">
+    <tspan class="displacy-word" fill="currentColor" x="1100">on</tspan>
+    <tspan class="displacy-tag" dy="2em" fill="currentColor" x="1100">ADP</tspan>
+</text>
+
+<text class="displacy-token" fill="currentColor" text-anchor="middle" y="309.5">
+    <tspan class="displacy-word" fill="currentColor" x="1275">the</tspan>
+    <tspan class="displacy-tag" dy="2em" fill="currentColor" x="1275">DET</tspan>
+</text>
+
+<text class="displacy-token" fill="currentColor" text-anchor="middle" y="309.5">
+    <tspan class="displacy-word" fill="currentColor" x="1450">plain.</tspan>
+    <tspan class="displacy-tag" dy="2em" fill="currentColor" x="1450">NOUN</tspan>
+</text>
+
+<g class="displacy-arrow">
+    <path class="displacy-arc" id="arrow-5e42e13aec4f47c2afc98862db1c9779-0-0" stroke-width="2px" d="M70,264.5 C70,177.0 215.0,177.0 215.0,264.5" fill="none" stroke="currentColor"></path>
+    <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
+        <textpath xlink:href="#arrow-5e42e13aec4f47c2afc98862db1c9779-0-0" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">det</textpath>
+    </text>
+    <path class="displacy-arrowhead" d="M70,266.5 L62,254.5 78,254.5" fill="currentColor"></path>
+</g>
+
+<g class="displacy-arrow">
+    <path class="displacy-arc" id="arrow-5e42e13aec4f47c2afc98862db1c9779-0-1" stroke-width="2px" d="M245,264.5 C245,2.0 750.0,2.0 750.0,264.5" fill="none" stroke="currentColor"></path>
+    <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
+        <textpath xlink:href="#arrow-5e42e13aec4f47c2afc98862db1c9779-0-1" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">nsubj</textpath>
+    </text>
+    <path class="displacy-arrowhead" d="M245,266.5 L237,254.5 253,254.5" fill="currentColor"></path>
+</g>
+
+<g class="displacy-arrow">
+    <path class="displacy-arc" id="arrow-5e42e13aec4f47c2afc98862db1c9779-0-2" stroke-width="2px" d="M245,264.5 C245,177.0 390.0,177.0 390.0,264.5" fill="none" stroke="currentColor"></path>
+    <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
+        <textpath xlink:href="#arrow-5e42e13aec4f47c2afc98862db1c9779-0-2" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">prep</textpath>
+    </text>
+    <path class="displacy-arrowhead" d="M390.0,266.5 L398.0,254.5 382.0,254.5" fill="currentColor"></path>
+</g>
+
+<g class="displacy-arrow">
+    <path class="displacy-arc" id="arrow-5e42e13aec4f47c2afc98862db1c9779-0-3" stroke-width="2px" d="M420,264.5 C420,177.0 565.0,177.0 565.0,264.5" fill="none" stroke="currentColor"></path>
+    <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
+        <textpath xlink:href="#arrow-5e42e13aec4f47c2afc98862db1c9779-0-3" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">pobj</textpath>
+    </text>
+    <path class="displacy-arrowhead" d="M565.0,266.5 L573.0,254.5 557.0,254.5" fill="currentColor"></path>
+</g>
+
+<g class="displacy-arrow">
+    <path class="displacy-arc" id="arrow-5e42e13aec4f47c2afc98862db1c9779-0-4" stroke-width="2px" d="M770,264.5 C770,177.0 915.0,177.0 915.0,264.5" fill="none" stroke="currentColor"></path>
+    <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
+        <textpath xlink:href="#arrow-5e42e13aec4f47c2afc98862db1c9779-0-4" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">advmod</textpath>
+    </text>
+    <path class="displacy-arrowhead" d="M915.0,266.5 L923.0,254.5 907.0,254.5" fill="currentColor"></path>
+</g>
+
+<g class="displacy-arrow">
+    <path class="displacy-arc" id="arrow-5e42e13aec4f47c2afc98862db1c9779-0-5" stroke-width="2px" d="M770,264.5 C770,89.5 1095.0,89.5 1095.0,264.5" fill="none" stroke="currentColor"></path>
+    <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
+        <textpath xlink:href="#arrow-5e42e13aec4f47c2afc98862db1c9779-0-5" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">prep</textpath>
+    </text>
+    <path class="displacy-arrowhead" d="M1095.0,266.5 L1103.0,254.5 1087.0,254.5" fill="currentColor"></path>
+</g>
+
+<g class="displacy-arrow">
+    <path class="displacy-arc" id="arrow-5e42e13aec4f47c2afc98862db1c9779-0-6" stroke-width="2px" d="M1295,264.5 C1295,177.0 1440.0,177.0 1440.0,264.5" fill="none" stroke="currentColor"></path>
+    <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
+        <textpath xlink:href="#arrow-5e42e13aec4f47c2afc98862db1c9779-0-6" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">det</textpath>
+    </text>
+    <path class="displacy-arrowhead" d="M1295,266.5 L1287,254.5 1303,254.5" fill="currentColor"></path>
+</g>
+
+<g class="displacy-arrow">
+    <path class="displacy-arc" id="arrow-5e42e13aec4f47c2afc98862db1c9779-0-7" stroke-width="2px" d="M1120,264.5 C1120,89.5 1445.0,89.5 1445.0,264.5" fill="none" stroke="currentColor"></path>
+    <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
+        <textpath xlink:href="#arrow-5e42e13aec4f47c2afc98862db1c9779-0-7" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">pobj</textpath>
+    </text>
+    <path class="displacy-arrowhead" d="M1445.0,266.5 L1453.0,254.5 1437.0,254.5" fill="currentColor"></path>
+</g>
+</svg></span>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>However, the this only work on a single sentence. What if we have more sentences like a novel? There are features for sentence boundary detection (SBD)—also known as sentence segmentation—based on the builtin/default sentencizer:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">text</span> <span class="o">=</span> <span class="s2">"We were all out at the zoo one day, I was doing some acting, walking on the railing of the gorilla exhibit. I fell in.Everyone screamed and Tommy jumped in after me, forgetting that he had blueberries in his front pocket. The gorillas just went wild."</span>
+<span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">sent</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">sents</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"&gt;"</span><span class="p">,</span> <span class="n">sent</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>&gt; We were all out at the zoo one day, I was doing some acting, walking on the railing of the gorilla exhibit.
+&gt; I fell in.
+&gt; Everyone screamed and Tommy jumped in after me, forgetting that he had blueberries in his front pocket.
+&gt; The gorillas just went wild.
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>When spaCy generates a document, it employs a non-destructive tokenization principle, which means that the tokens, sentences, and so on are simply indexes into a large array. In other words, they do not cut up the text stream into small chunks. As a result, each sentence is a span with a start and end index into the document array:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">sent</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">sents</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"&gt;"</span><span class="p">,</span> <span class="n">sent</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">sent</span><span class="o">.</span><span class="n">end</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>&gt; 0 25
+&gt; 25 29
+&gt; 29 48
+&gt; 48 54
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We can index into the document array to pull out the tokens for one sentence:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">doc</span><span class="p">[</span><span class="mi">48</span><span class="p">:</span><span class="mi">54</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>The gorillas just went wild.</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Or simply index into a specific token, such as the verb <strong>went</strong> in the last sentence:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">token</span> <span class="o">=</span> <span class="n">doc</span><span class="p">[</span><span class="mi">51</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="n">token</span><span class="o">.</span><span class="n">lemma_</span><span class="p">,</span> <span class="n">token</span><span class="o">.</span><span class="n">pos_</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>went go VERB
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>At this point, we can parse a document, segment that document into sentences, then look at annotations about the tokens in each sentence. That's a good start.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Acquiring-Text">
+<a class="anchor" href="#Acquiring-Text" aria-hidden="true"><span class="octicon octicon-link"></span></a>Acquiring Text<a class="anchor-link" href="#Acquiring-Text"> </a>
+</h3>
+<p>Using the internet as a quick source is one option for us to acquire texts. Of course, we get HTML when we download web pages and must subsequently extract text from them. For this, <a href="https://www.crummy.com/software/BeautifulSoup/bs4/doc/">Beautiful Soup</a> is a popular package.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">"ignore"</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In the following function get_text() we'll parse the HTML to find all of the <strong>\<p></p></strong> tags, then extract the text for those:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">bs4</span> <span class="kn">import</span> <span class="n">BeautifulSoup</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="k">def</span> <span class="nf">get_text</span> <span class="p">(</span><span class="n">url</span><span class="p">):</span>
+    <span class="n">buf</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="s2">"html.parser"</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">soup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">"p"</span><span class="p">):</span>
+            <span class="n">buf</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">get_text</span><span class="p">())</span>
+        <span class="k">return</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">buf</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now let's grab some text from online sources. We can compare open-source licenses hosted on the <a href="https://opensource.org/licenses/">Open Source Initiative</a> site:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">lic</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">lic</span><span class="p">[</span><span class="s2">"mit"</span><span class="p">]</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="n">get_text</span><span class="p">(</span><span class="s2">"https://opensource.org/licenses/MIT"</span><span class="p">))</span>
+<span class="n">lic</span><span class="p">[</span><span class="s2">"asl"</span><span class="p">]</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="n">get_text</span><span class="p">(</span><span class="s2">"https://opensource.org/licenses/Apache-20"</span><span class="p">))</span>
+<span class="n">lic</span><span class="p">[</span><span class="s2">"bsd"</span><span class="p">]</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="n">get_text</span><span class="p">(</span><span class="s2">"https://opensource.org/licenses/BSD-3-Clause"</span><span class="p">))</span>
+
+<span class="k">for</span> <span class="n">sent</span> <span class="ow">in</span> <span class="n">lic</span><span class="p">[</span><span class="s2">"bsd"</span><span class="p">]</span><span class="o">.</span><span class="n">sents</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"&gt;"</span><span class="p">,</span> <span class="n">sent</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>&gt; SPDX short identifier: BSD-3-Clause Note: This license has also been called the "New BSD License" or "Modified BSD License".
+&gt; See also the 2-clause BSD License.
+&gt; Copyright &lt;YEAR&gt; &lt;COPYRIGHT HOLDER&gt;Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:1.
+&gt; Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.3.
+&gt; Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+&gt; THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+&gt; CONTRIBUTORS
+&gt; "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+&gt; IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+&gt; HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.For over 20 years the Open Source Initiative (OSI) has worked to raise awareness and adoption of open source software, and build bridges between open source communities of practice.
+&gt; As a global non-profit, the OSI champions software freedom in society through education, collaboration, and infrastructure, stewarding the Open Source Definition (OSD), and preventing abuse of the ideals and ethos inherent to the open source movement.
+&gt; Open source software is made by many people and distributed under an OSD-compliant license which grants all the rights to use, study, change, and share the software in modified and unmodified form.
+&gt; Software freedom is essential to enabling community development of open source software.
+&gt;  Sign-up for our newsletter!The content on this website, of which Opensource.org is the author, is licensed under a Creative Commons Attribution 4.0 International License.
+&gt; 
+Opensource.org is not the author of any of the licenses reproduced on this site.
+&gt; Questions about the copyright in a license should be directed to the license steward.
+&gt; Hosting for Opensource.org is generously provided by DigitalOcean.
+&gt; Please see Terms of Service.
+&gt; For questions regarding the OSI website and contents please contact us.
+&gt;  
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Text comparison is a common application for natural language work. With those open-source licenses, for example, we can download their text, parse it, and then compare similarity metrics among them:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">pairs</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="s2">"mit"</span><span class="p">,</span> <span class="s2">"asl"</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">"asl"</span><span class="p">,</span> <span class="s2">"bsd"</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">"bsd"</span><span class="p">,</span> <span class="s2">"mit"</span><span class="p">]]</span>
+
+<span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">pairs</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">lic</span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="o">.</span><span class="n">similarity</span><span class="p">(</span><span class="n">lic</span><span class="p">[</span><span class="n">b</span><span class="p">]))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>mit asl 0.7400606692738089
+asl bsd 0.7629310829561079
+bsd mit 0.976838684194463
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This is intriguing because the BSD and MIT licenses appear to be the most similar. They are, in fact, closely related.</p>
+<p>Due to the OSI disclaimer in the footer, some extra text was included in each document—but this provides a reasonable approximation for comparing the licenses.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Natural-Language-Understanding">
+<a class="anchor" href="#Natural-Language-Understanding" aria-hidden="true"><span class="octicon octicon-link"></span></a>Natural Language Understanding<a class="anchor-link" href="#Natural-Language-Understanding"> </a>
+</h3>
+<p>Now, let's look at some of the spaCy features for NLU. Given a parse of a document, we can extract the noun chunks, i.e., each of the noun phrases:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">text</span> <span class="o">=</span> <span class="s2">"Steve Jobs and Steve Wozniak incorporated Apple Computer on January 3, 1977, in Cupertino, California."</span>
+<span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">noun_chunks</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">chunk</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Steve Jobs
+Steve Wozniak
+Apple Computer
+January
+Cupertino
+California
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Noun phrases in a sentence generally provide more information content as a simple filter used to reduce a long document into a more "distilled" representation.</p>
+<p>This approach can be extended by identifying named entities within the text, i.e., proper nouns:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">ent</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">ents</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">ent</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="n">ent</span><span class="o">.</span><span class="n">label_</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Steve Jobs PERSON
+Steve Wozniak PERSON
+Apple Computer ORG
+January 3, 1977 DATE
+Cupertino GPE
+California GPE
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The displaCy library provides an excellent way to visualize named entities:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">displacy</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">"ent"</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+<span class="tex2jax_ignore"><div class="entities" style="line-height: 2.5; direction: ltr">
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    Steve Jobs
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+ and 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    Steve Wozniak
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+ incorporated 
+<mark class="entity" style="background: #7aecec; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    Apple Computer
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">ORG</span>
+</mark>
+ on 
+<mark class="entity" style="background: #bfe1d9; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    January 3, 1977
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">DATE</span>
+</mark>
+, in 
+<mark class="entity" style="background: #feca74; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    Cupertino
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">GPE</span>
+</mark>
+, 
+<mark class="entity" style="background: #feca74; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    California
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">GPE</span>
+</mark>
+.</div></span>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>There's a spaCy integration for WordNet called <a href="https://github.com/recognai/spacy-wordnet">spacy-wordnet</a> by <a href="https://twitter.com/dvilasuero">Daniel Vila Suero</a>, an expert in natural language and knowledge graph work.</p>
+<p>Then we'll load the WordNet data via NLTK (these things happen):</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">nltk</span>
+<span class="kn">import</span> <span class="nn">ssl</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">_create_unverified_https_context</span> <span class="o">=</span> <span class="n">ssl</span><span class="o">.</span><span class="n">_create_unverified_context</span>
+<span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+    <span class="k">pass</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">ssl</span><span class="o">.</span><span class="n">_create_default_https_context</span> <span class="o">=</span> <span class="n">_create_unverified_https_context</span>
+
+<span class="n">nltk</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="s2">"wordnet"</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[nltk_data] Downloading package wordnet to /Users/zeyu/nltk_data...
+[nltk_data]   Package wordnet is already up-to-date!
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>True</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>It should be noted that spaCy operates as a "pipeline" and provides means for customizing parts of the pipeline in use. This is fantastic for enabling really interesting workflow integrations in data science work. We'll include the WordnetAnnotator from the spacy-wordnet project here:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">spacy_wordnet.wordnet_annotator</span> <span class="kn">import</span> <span class="n">WordnetAnnotator</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"before"</span><span class="p">,</span> <span class="n">nlp</span><span class="o">.</span><span class="n">pipe_names</span><span class="p">)</span>
+
+<span class="c1">#V3 difference</span>
+<span class="k">if</span> <span class="s2">"spacy_wordnet"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">nlp</span><span class="o">.</span><span class="n">pipe_names</span><span class="p">:</span>
+    <span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"spacy_wordnet"</span><span class="p">,</span> <span class="n">after</span><span class="o">=</span><span class="s1">'tagger'</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s1">'lang'</span><span class="p">:</span> <span class="n">nlp</span><span class="o">.</span><span class="n">lang</span><span class="p">})</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"after"</span><span class="p">,</span> <span class="n">nlp</span><span class="o">.</span><span class="n">pipe_names</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>before ['tok2vec', 'tagger', 'parser', 'attribute_ruler', 'lemmatizer', 'ner']
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">token</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">"withdraw"</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">token</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">wordnet</span><span class="o">.</span><span class="n">synsets</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[Synset('withdraw.v.01'),
+ Synset('retire.v.02'),
+ Synset('disengage.v.01'),
+ Synset('recall.v.07'),
+ Synset('swallow.v.05'),
+ Synset('seclude.v.01'),
+ Synset('adjourn.v.02'),
+ Synset('bow_out.v.02'),
+ Synset('withdraw.v.09'),
+ Synset('retire.v.08'),
+ Synset('retreat.v.04'),
+ Synset('remove.v.01')]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">token</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">wordnet</span><span class="o">.</span><span class="n">lemmas</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[Lemma('withdraw.v.01.withdraw'),
+ Lemma('withdraw.v.01.retreat'),
+ Lemma('withdraw.v.01.pull_away'),
+ Lemma('withdraw.v.01.draw_back'),
+ Lemma('withdraw.v.01.recede'),
+ Lemma('withdraw.v.01.pull_back'),
+ Lemma('withdraw.v.01.retire'),
+ Lemma('withdraw.v.01.move_back'),
+ Lemma('retire.v.02.retire'),
+ Lemma('retire.v.02.withdraw'),
+ Lemma('disengage.v.01.disengage'),
+ Lemma('disengage.v.01.withdraw'),
+ Lemma('recall.v.07.recall'),
+ Lemma('recall.v.07.call_in'),
+ Lemma('recall.v.07.call_back'),
+ Lemma('recall.v.07.withdraw'),
+ Lemma('swallow.v.05.swallow'),
+ Lemma('swallow.v.05.take_back'),
+ Lemma('swallow.v.05.unsay'),
+ Lemma('swallow.v.05.withdraw'),
+ Lemma('seclude.v.01.seclude'),
+ Lemma('seclude.v.01.sequester'),
+ Lemma('seclude.v.01.sequestrate'),
+ Lemma('seclude.v.01.withdraw'),
+ Lemma('adjourn.v.02.adjourn'),
+ Lemma('adjourn.v.02.withdraw'),
+ Lemma('adjourn.v.02.retire'),
+ Lemma('bow_out.v.02.bow_out'),
+ Lemma('bow_out.v.02.withdraw'),
+ Lemma('withdraw.v.09.withdraw'),
+ Lemma('withdraw.v.09.draw'),
+ Lemma('withdraw.v.09.take_out'),
+ Lemma('withdraw.v.09.draw_off'),
+ Lemma('retire.v.08.retire'),
+ Lemma('retire.v.08.withdraw'),
+ Lemma('retreat.v.04.retreat'),
+ Lemma('retreat.v.04.pull_back'),
+ Lemma('retreat.v.04.back_out'),
+ Lemma('retreat.v.04.back_away'),
+ Lemma('retreat.v.04.crawfish'),
+ Lemma('retreat.v.04.crawfish_out'),
+ Lemma('retreat.v.04.pull_in_one's_horns'),
+ Lemma('retreat.v.04.withdraw'),
+ Lemma('remove.v.01.remove'),
+ Lemma('remove.v.01.take'),
+ Lemma('remove.v.01.take_away'),
+ Lemma('remove.v.01.withdraw')]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">token</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">wordnet</span><span class="o">.</span><span class="n">wordnet_domains</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>['astronomy',
+ 'school',
+ 'telegraphy',
+ 'industry',
+ 'psychology',
+ 'ethnology',
+ 'ethnology',
+ 'administration',
+ 'school',
+ 'finance',
+ 'economy',
+ 'exchange',
+ 'banking',
+ 'commerce',
+ 'medicine',
+ 'ethnology',
+ 'university',
+ 'school',
+ 'buildings',
+ 'factotum',
+ 'agriculture',
+ 'mechanics',
+ 'gastronomy',
+ 'meteorology',
+ 'physics',
+ 'basketball',
+ 'anatomy',
+ 'skiing',
+ 'nautical',
+ 'engineering',
+ 'racing',
+ 'home',
+ 'drawing',
+ 'dentistry',
+ 'ethnology',
+ 'mathematics',
+ 'furniture',
+ 'animal_husbandry',
+ 'industry',
+ 'economy',
+ 'body_care',
+ 'chemistry',
+ 'medicine',
+ 'surgery',
+ 'vehicles',
+ 'transport',
+ 'atomic_physic',
+ 'archaeology',
+ 'hydraulics',
+ 'oceanography',
+ 'golf',
+ 'sculpture',
+ 'earth',
+ 'applied_science',
+ 'artisanship']</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Again, if you're working with knowledge graphs, those WordNet "word sense" links could be used in conjunction with graph algorithms to help identify the meanings of specific words. This technique, known as summarization, can also be used to create summaries for longer sections of text. It's beyond the scope of this tutorial, but it's an interesting application for natural language in the industry right now.</p>
+<p>In the opposite direction, if you know ahead of time that a document is about a specific domain or set of topics, you can limit the meanings returned by WordNet. In the following example, we'll look at NLU results from the Finance and Banking sectors:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">domains</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"finance"</span><span class="p">,</span> <span class="s2">"banking"</span><span class="p">]</span>
+<span class="n">sentence</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">"I want to withdraw 5,000 euros."</span><span class="p">)</span>
+
+<span class="n">enriched_sent</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">sentence</span><span class="p">:</span>
+    <span class="c1"># get synsets within the desired domains</span>
+    <span class="n">synsets</span> <span class="o">=</span> <span class="n">token</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">wordnet</span><span class="o">.</span><span class="n">wordnet_synsets_for_domain</span><span class="p">(</span><span class="n">domains</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">synsets</span><span class="p">:</span>
+        <span class="n">lemmas_for_synset</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">synsets</span><span class="p">:</span>
+        <span class="c1"># get synset variants and add to the enriched sentence</span>
+            <span class="n">lemmas_for_synset</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">lemma_names</span><span class="p">())</span>
+            <span class="n">enriched_sent</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"(</span><span class="si">{}</span><span class="s2">)"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">"|"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">lemmas_for_synset</span><span class="p">))))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">enriched_sent</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">enriched_sent</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>I (privation|want|neediness|deprivation) (deficiency|deprivation|privation|lack|want|neediness) (deficiency|deprivation|privation|require|lack|want|need|neediness) to (withdraw|draw_off|draw|take_out) 5,000 euros .
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>That example may appear straightforward, but if you experiment with the <strong>domains</strong> list, you'll notice that the results exhibit a kind of combinatorial explosion when run without reasonable constraints. Consider a knowledge graph with millions of elements: you'd want to limit searches wherever possible to avoid having each query take days/weeks/months/years to compute.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Text-Comparison-with-spaCy-and-Scattertext">
+<a class="anchor" href="#Text-Comparison-with-spaCy-and-Scattertext" aria-hidden="true"><span class="octicon octicon-link"></span></a>Text Comparison with spaCy and Scattertext<a class="anchor-link" href="#Text-Comparison-with-spaCy-and-Scattertext"> </a>
+</h3>
+<p>Sometimes the problems encountered when attempting to understand a text—or, better yet, attempting to understand a corpus (a dataset containing many related texts)—become so complex that they must first be visualized. Here's an interactive visualization to help you understand text: <a href="https://twitter.com/jasonkessler">Jason Kessler</a>'s genius has resulted in <a href="https://spacy.io/universe/project/scattertext">scattertext</a>.</p>
+<p>Let us examine text data from party conventions held during the 2012 US Presidential elections. Please keep in mind that this cell may take a few minutes to run, but the results of all that number-crunching are well worth the wait.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">scattertext</span> <span class="k">as</span> <span class="nn">st</span>
+
+<span class="k">if</span> <span class="s2">"merge_entities"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">nlp</span><span class="o">.</span><span class="n">pipe_names</span><span class="p">:</span>
+    <span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s1">'merge_entities'</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="s2">"merge_noun_chunks"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">nlp</span><span class="o">.</span><span class="n">pipe_names</span><span class="p">:</span>
+    <span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s1">'merge_noun_chunks'</span><span class="p">)</span>
+
+<span class="n">convention_df</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">SampleCorpora</span><span class="o">.</span><span class="n">ConventionData2012</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
+<span class="n">corpus</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">CorpusFromPandas</span><span class="p">(</span><span class="n">convention_df</span><span class="p">,</span> <span class="n">category_col</span><span class="o">=</span><span class="s2">"party"</span><span class="p">,</span> <span class="n">text_col</span><span class="o">=</span><span class="s2">"text"</span><span class="p">,</span> <span class="n">nlp</span><span class="o">=</span><span class="n">nlp</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">convention_df</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>party</th>
+      <th>text</th>
+      <th>speaker</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>democrat</td>
+      <td>Thank you. Thank you. Thank you. Thank you so ...</td>
+      <td>BARACK OBAMA</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>democrat</td>
+      <td>Thank you so much. Tonight, I am so thrilled a...</td>
+      <td>MICHELLE OBAMA</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>democrat</td>
+      <td>Thank you. It is a singular honor to be here t...</td>
+      <td>RICHARD DURBIN</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>democrat</td>
+      <td>Hey, Delaware. \nAnd my favorite Democrat, Jil...</td>
+      <td>JOSEPH BIDEN</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>democrat</td>
+      <td>Hello. \nThank you, Angie. I'm so proud of how...</td>
+      <td>JILL BIDEN</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>184</th>
+      <td>republican</td>
+      <td>As the elected leader of 250,000 College Repub...</td>
+      <td>ALEX SCHRIVER</td>
+    </tr>
+    <tr>
+      <th>185</th>
+      <td>republican</td>
+      <td>Good afternoon. I'm Pete Sessions, a congressm...</td>
+      <td>PETE SESSIONS</td>
+    </tr>
+    <tr>
+      <th>186</th>
+      <td>republican</td>
+      <td>To Chairman Priebus and to my fellow Americans...</td>
+      <td>BOB BUCKHORN</td>
+    </tr>
+    <tr>
+      <th>187</th>
+      <td>republican</td>
+      <td>\nAbsolutely. Thank you, Mr.Chairman.\nWelcome...</td>
+      <td>SHARON DAY</td>
+    </tr>
+    <tr>
+      <th>188</th>
+      <td>republican</td>
+      <td>I am thrilled to add Utah's voice in support f...</td>
+      <td>MIA LOVE</td>
+    </tr>
+  </tbody>
+</table>
+<p>189 rows × 3 columns</p>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Once you have the <strong>corpus</strong> ready, generate an interactive visualization in HTML:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">html</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">produce_scattertext_explorer</span><span class="p">(</span><span class="n">corpus</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="s2">"democrat"</span><span class="p">,</span> 
+                                       <span class="n">category_name</span><span class="o">=</span><span class="s2">"Democratic"</span><span class="p">,</span>
+                                       <span class="n">not_category_name</span><span class="o">=</span><span class="s2">"Republican"</span><span class="p">,</span>
+                                       <span class="n">width_in_pixels</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+                                       <span class="n">metadata</span><span class="o">=</span><span class="n">convention_df</span><span class="p">[</span><span class="s2">"speaker"</span><span class="p">])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now we'll render the HTML—give it a minute or two to load, it's worth the wait:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">IFrame</span>
+
+<span class="n">file_name</span> <span class="o">=</span> <span class="s2">"foo.html"</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="s2">"wb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">html</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">))</span>
+
+<span class="n">IFrame</span><span class="p">(</span><span class="n">src</span><span class="o">=</span><span class="n">file_name</span><span class="p">,</span> <span class="n">width</span> <span class="o">=</span> <span class="mi">1200</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">700</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+
+        <iframe width="1200" height="700" src="foo.html" frameborder="0" allowfullscreen=""></iframe>
+        
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Consider storing text from the last three years of customer support for a specific product in your company. Assume your team required information about how customers were discussing the product. This scattertext library has the potential to be extremely useful! You could cluster (k=2) on NPS (a customer evaluation metric) and then substitute the top two clustering components for the Democrat/Republican dimension.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Conclusion">
+<a class="anchor" href="#Conclusion" aria-hidden="true"><span class="octicon octicon-link"></span></a>Conclusion<a class="anchor-link" href="#Conclusion"> </a>
+</h1>
+<p>In this blog, we introduce some frequently used features of spaCy from an overall perspective. If you asked many data scientists five years ago about open source in Python for natural language processing, the default answer would have been NLTK. That project includes almost everything except the kitchen sink and has mostly academic components.</p>
+<p>There's so much more we can <a href="https://blog.dominodatalab.com/making-pyspark-work-spacy-overcoming-serialization-errors">do with spaCy</a>— hopefully, this tutorial provides an introduction. We wish you all the best in your natural language work.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="christopherGuan/sample-ds-blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/sample-ds-blog/spacy/python/machine%20learning/data%20mining/nlp/randomforest/2022/03/31/spaCy.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/sample-ds-blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/sample-ds-blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/sample-ds-blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>This site is built with fastpages.</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/christopherGuan" target="_blank" title="christopherGuan"><svg class="svg-icon grey"><use xlink:href="/sample-ds-blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/sample-ds-blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
